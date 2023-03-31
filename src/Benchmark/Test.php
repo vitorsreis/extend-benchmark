@@ -187,27 +187,25 @@ readonly class Test
             return 'null';
         } elseif ($throw && is_array($value)) {
             return sprintf("throw{%s}", implode(',', array_filter([
-                in_array('class', $throw) && isset($value['class'])
-                    ? sprintf("class:\"%s\"", $value['class']) : null,
+                in_array('class', $throw) && array_key_exists('class', $value)
+                    ? sprintf("class:\"%s\"", self::strlimited($value['class'], true)) : null,
 
-                in_array('code', $throw) && isset($value['code'])
+                in_array('code', $throw) && array_key_exists('code', $value)
                     ? sprintf("code:\"%s\"", $value['code']) : null,
 
-                in_array('message', $throw) && isset($value['message'])
+                in_array('message', $throw) && array_key_exists('message', $value)
                     ? sprintf("message:\"%s\"", self::strlimited($value['message'])) : null,
 
-                in_array('file', $throw) && isset($value['file'])
+                in_array('file', $throw) && array_key_exists('file', $value)
                     ? sprintf("file:\"%s\"", self::strlimited($value['file'], true)) : null,
 
-                in_array('line', $throw) && isset($value['line'])
+                in_array('line', $throw) && array_key_exists('line', $value)
                     ? sprintf("line:\"%s\"", $value['line']) : null
             ])));
         } elseif (is_array($value)) {
-            return sprintf("array{%s}", self::strlimited(
-                substr(json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT), 1, -1)
-            ));
+            return sprintf("array{%s}", self::strlimited($value));
         } elseif (is_object($value)) {
-            return sprintf("object{%s}", get_class($value));
+            return sprintf("%s{%s}", basename(get_class($value)), self::strlimited($value));
         } else {
             return sprintf("%s{%s}", gettype($value), $value);
         }
@@ -215,7 +213,12 @@ readonly class Test
 
     private static function strlimited(mixed $value, bool $inverse = false): string
     {
-        $value = strval($value);
+        if (is_array($value) || is_object($value)) {
+            $value = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
+            $value = substr($value, 1, -1);
+        } else {
+            $value = strval($value);
+        }
 
         if (strlen($value) < self::MAX_STRING_LENGTH) {
             return $value;
