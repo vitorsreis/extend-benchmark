@@ -18,7 +18,7 @@ use Throwable;
 
 readonly class Test
 {
-    private const MAX_STRING_LENGTH = 30;
+    private const MAX_STRING_LENGTH = 50;
 
     public function __construct(
         public string     $title,
@@ -98,40 +98,14 @@ readonly class Test
     {
         $status = Status::SUCCESS;
         $error = [];
-
-        if (array_key_exists('type', $this->experct ?? []) && $result['type'] !== $this->experct['type']) {
-            $status = Status::FAILED;
-            $error[] = sprintf(
-                "Experct type %s, actual %s",
-                $this->strvalue($this->experct['type']),
-                $this->strvalue($result['type'])
-            );
-        }
-
-        if (array_key_exists('return', $this->experct ?? []) && $result['return'] !== $this->experct['return']) {
-            $status = Status::FAILED;
-            $error[] = sprintf(
-                "Experct return %s, actual %s",
-                $this->strvalue($this->experct['return']),
-                $this->strvalue($result['return'])
-            );
-        }
-
-        if (array_key_exists('output', $this->experct ?? []) && $result['output'] !== $this->experct['output']) {
-            $status = Status::FAILED;
-            $error[] = sprintf(
-                "Experct output %s, actual %s",
-                $this->strvalue($this->experct['output']),
-                $this->strvalue($result['output'])
-            );
-        }
+        $forceThrow = false;
 
         if (array_key_exists('throw', $this->experct ?? [])) {
             $keys = [];
 
             if (is_null($this->experct['throw']) && $result['throw']) {
                 $status = Status::FAILED;
-                $keys = ['class', 'message', 'code', 'line', 'file'];
+                $keys = [ 'class', 'message', 'code', 'line', 'file' ];
             } elseif (is_string($this->experct['throw'])) {
                 if (isset($this->experct['throw']['class'])
                     && $this->experct['throw']['class'] !== ($result['throw']['class'] ?? null)) {
@@ -175,6 +149,37 @@ readonly class Test
             }
         }
 
+        if (array_key_exists('output', $this->experct ?? []) && $result['output'] !== $this->experct['output']) {
+            $status = Status::FAILED;
+            $error[] = sprintf(
+                "Experct output %s, actual %s",
+                $this->strvalue($this->experct['output']),
+                empty($result['throw']) || array_key_exists('throw', $this->experct ?? [])
+                    ? $this->strvalue($result['output'])
+                    : $this->strvalue($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
+            );
+        }
+
+        if (array_key_exists('return', $this->experct ?? []) && $result['return'] !== $this->experct['return']) {
+            $status = Status::FAILED;
+            $error[] = sprintf(
+                "Experct return %s, actual %s",
+                $this->strvalue($this->experct['return']),
+                empty($result['throw']) || array_key_exists('throw', $this->experct ?? [])
+                    ? $this->strvalue($result['return'])
+                    : $this->strvalue($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
+            );
+        }
+
+        if (array_key_exists('type', $this->experct ?? []) && $result['type'] !== $this->experct['type']) {
+            $status = Status::FAILED;
+            $error[] = sprintf(
+                "Experct type %s, actual %s",
+                $this->strvalue($this->experct['type']),
+                $this->strvalue($result['type'])
+            );
+        }
+
         return [
             'status' => $status,
             'error' => $error ?: null
@@ -194,7 +199,7 @@ readonly class Test
                     ? sprintf("code:\"%s\"", $value['code']) : null,
 
                 in_array('message', $throw) && array_key_exists('message', $value)
-                    ? sprintf("message:\"%s\"", self::strlimited($value['message'])) : null,
+                    ? sprintf("message:\"%s\"", $value['message']) : null,
 
                 in_array('file', $throw) && array_key_exists('file', $value)
                     ? sprintf("file:\"%s\"", self::strlimited($value['file'], true)) : null,
