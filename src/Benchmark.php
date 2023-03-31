@@ -56,13 +56,13 @@ class Benchmark
         $totalIterations = 0;
 
         foreach ($this->benchmarks as $benckmark) {
-            $iterations = $benckmark->iterations ?: $iterations ?: 1;
+            $benckmark_iterations = $benckmark->iterations ?: $iterations ?: 1;
 
-            $totalIterations += $iterations;
+            $totalIterations += $benckmark_iterations;
 
-            $this->printer?->subtitle($benckmark->title, $benckmark->comment, $iterations);
+            $this->printer?->subtitle($benckmark->title, $benckmark->comment, $benckmark_iterations);
 
-            $results = $benckmark->execute($iterations);
+            $results = $benckmark->execute($benckmark_iterations);
 
             foreach ($results as $testTitle => &$testResult) {
                 $testResult = $this->end($testResult);
