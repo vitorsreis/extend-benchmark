@@ -101,9 +101,11 @@ class Console implements Printer
                     $text = $end
                         ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
                         : sprintf(
-                            "\e[0m| %s | %.11fs | \e[3;33mPartial success, failed: %s",
+                            "\e[0m| %s | %.11fs | \e[3;33mPartial success %s/%s, failed: %s",
                             $title,
                             $result['_']['average'],
+                            count(array_filter(array_slice($result, 1), fn($i) => $i['status'] === Status::SUCCESS)),
+                            count(array_slice($result, 1)),
                             current($result['_']['error'])
                         );
                     break;

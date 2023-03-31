@@ -144,9 +144,11 @@ HTML
                     $text = $end
                         ? sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Not conclusive</span>", $title)
                         : sprintf(
-                            "<span class='m0'>| %s | %.11fs | <span class='m3 m33'>Partial success, failed: %s</span>",
+                            "<span class='m0'>| %s | %.11fs | <span class='m3 m33'>Partial success %s/%s, failed: %s</span>",
                             $title,
                             $result['_']['average'],
+                            count(array_filter(array_slice($result, 1), fn($i) => $i['status'] === Status::SUCCESS)),
+                            count(array_slice($result, 1)),
                             current($result['_']['error'])
                         );
                     break;
