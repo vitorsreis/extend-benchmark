@@ -13,11 +13,12 @@ use D5WHUB\Extend\Benchmark\Utils\Status;
 
 class Console implements Printer
 {
-    private function withTime(string ...$values): void
+    public function withTime(string ...$values): self
     {
         foreach ($values as $value) {
-            echo "\e[0;90m[" . date('Y-m-d H:i:s') . "] $value\e[0m";
+            echo "\e[0;90m[" . date('Y-m-d H:i:s') . "] \e[0m$value\e[0m";
         }
+        return $this;
     }
 
     public function start(): self

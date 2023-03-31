@@ -36,15 +36,19 @@ class Benchmark
         $this->printer = $printer;
     }
 
-    public function createBenchmark(string $title, string|null $comment = null, int|null $iterations = null): Collection
-    {
-        return $this->benchmarks[] = new Collection($title, $comment, $iterations, $this->printer);
+    public function createBenchmark(
+        string $title,
+        string|null $comment = null,
+        int|null $iterations = null,
+        bool $ignoreResults = false
+    ): Collection {
+        return $this->benchmarks[] = new Collection($title, $comment, $iterations, $this->printer, $ignoreResults);
     }
 
     /**
      * @throws BenchmarkException
      */
-    public function execute(int|null $iterations = null): array
+    public function execute(int|null $iterations = null, bool $ignoreEndResults = false): array
     {
         $startTime = microtime(true);
         $this->printer?->start();
@@ -64,30 +68,39 @@ class Benchmark
 
             foreach ($results as $testTitle => &$testResult) {
                 $totalIterations += $benckmark_iterations;
-                $testResult = $this->end($testResult);
-                $endResult[$testTitle][] = $testResult;
+                if (!$benckmark->ignoreResults) {
+                    $testResult = $this->end($testResult);
+                    $endResult[$testTitle][] = $testResult;
+                }
             }
 
-            $this->sort($results);
-            $this->printer?->results($results);
+            if (!$benckmark->ignoreResults) {
+                $this->sort($results);
+                $this->printer?->results($results);
 
-            $this->printer?->skipline();
+                $this->printer?->skipline();
+            } else {
+                $this->printer?->withTime("| Ignored\n");
+                $this->printer?->skipline();
+            }
         }
 
-        $this->printer?->subtitle('End result', "This is the final average considering all benchmarks previously run");
+        if (!$ignoreEndResults) {
+            $this->printer?->subtitle('End result', "Final average considering all benchmarks previously run");
 
-        $endResult = array_map(
-            function ($results) {
-                $results = array_map(fn($i) => array_slice($i, 1), $results);
-                $results = array_merge(...$results);
-                return $this->end($results);
-            },
-            $endResult
-        );
+            $endResult = array_map(
+                function ($results) {
+                    $results = array_map(fn($i) => array_slice($i, 1), $results);
+                    $results = array_merge(...$results);
+                    return $this->end($results);
+                },
+                $endResult
+            );
 
-        $this->sort($endResult);
+            $this->sort($endResult);
 
-        $this->printer?->results($endResult, true);
+            $this->printer?->results($endResult, true);
+        }
 
         $this->printer?->skipline();
 

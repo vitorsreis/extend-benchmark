@@ -10,6 +10,8 @@ namespace D5WHUB\Extend\Benchmark\Utils;
 
 interface Printer
 {
+    public function withTime(string ...$values): self;
+
     public function start(): self;
 
     public function title(string $title, ?string $comment): self;

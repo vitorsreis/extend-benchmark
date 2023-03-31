@@ -26,7 +26,8 @@ class Collection
         public readonly string       $title,
         public readonly string|null  $comment = null,
         public readonly int|null     $iterations = null,
-        public readonly Printer|null $printer = null
+        public readonly Printer|null $printer = null,
+        public readonly bool $ignoreResults = false
     ) {
     }
 
