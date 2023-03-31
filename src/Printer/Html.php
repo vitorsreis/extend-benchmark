@@ -68,7 +68,7 @@ HTML
     {
         $title = trim($title);
         $this->withTime("<span class='m0 m1 m3'>$title</span><br>");
-        if ($comment = trim($comment)) {
+        if ($comment && $comment = trim($comment)) {
             $this->withTime("<span class='m0 m1 m3'>$comment</span><br>");
         }
         return $this;
@@ -83,7 +83,7 @@ HTML
     public function subtitle(string $title, ?string $comment = null, ?int $iterations = null): self
     {
         $title = trim($title);
-        $comment = trim($comment);
+        $comment = $comment ? trim($comment) : '';
         $iterations = $iterations ? (" $iterations time" . ($iterations > 1 ? 's' : '')) : "";
         $comment = $comment ? " " . ($iterations ? "- " : "") . "$comment" : "";
 
@@ -132,6 +132,12 @@ HTML
                             $result['_']['average'] - $best
                         );
                     }
+                    break;
+
+                case Status::SKIPED:
+                    $text = $end
+                        ? sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Not conclusive</span>", $title)
+                        : sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Skiped</span>", $title);
                     break;
 
                 case Status::PARTIAL:

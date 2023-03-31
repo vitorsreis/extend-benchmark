@@ -61,19 +61,28 @@ readonly class Test
         ];
 
         $startTime = microtime(true);
-        foreach ($this->callbacks as $callback) {
-            $partial = $this->callback($callback, [
-                ...$callbackArgs,
-                '__iteraction' => $iteraction,
-                '__partial' => $partial ?? ''
-            ], [
-                ...$constructArgs,
-                '__iteraction' => $iteraction,
-                '__partial' => $partial ?? ''
-            ]);
+        if (empty($this->callbacks)) {
+            $partial = [
+                'type' => 'skiped',
+                'return' => null,
+                'output' => null,
+                'throw' => null
+            ];
+        } else {
+            foreach ($this->callbacks as $callback) {
+                $partial = $this->callback($callback, [
+                    ...$callbackArgs,
+                    '__iteraction' => $iteraction,
+                    '__partial' => $partial ?? ''
+                ], [
+                    ...$constructArgs,
+                    '__iteraction' => $iteraction,
+                    '__partial' => $partial ?? ''
+                ]);
 
-            if ($partial['type'] === 'throw') {
-                break;
+                if ($partial['type'] === 'throw') {
+                    break;
+                }
             }
         }
         $runningTime = microtime(true) - $startTime;
@@ -96,6 +105,13 @@ readonly class Test
      */
     private function experct(array $result): array
     {
+        if ($result['type'] === 'skiped') {
+            return [
+                'status' => Status::SKIPED,
+                'error' => [ "Empty callbacks..." ]
+            ];
+        }
+
         $status = Status::SUCCESS;
         $error = [];
         $forceThrow = false;

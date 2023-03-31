@@ -29,7 +29,7 @@ class Benchmark
         public readonly string|null $comment = null,
         Printer|null                $printer = null
     ) {
-        if (is_null($printer)) {
+        if (func_num_args() < 3) {
             $printer = isset($_SERVER['HTTP_USER_AGENT']) ? new Html() : new Console();
         }
 
@@ -44,12 +44,12 @@ class Benchmark
     /**
      * @throws BenchmarkException
      */
-    public function execute(int|null $iterations = null): self
+    public function execute(int|null $iterations = null): array
     {
         $startTime = microtime(true);
-        $this->printer->start();
-        $this->printer->title($this->title, $this->comment);
-        $this->printer->skipline();
+        $this->printer?->start();
+        $this->printer?->title($this->title, $this->comment);
+        $this->printer?->skipline();
 
         $endResult = [];
         $totalBenchmarks = count($this->benchmarks);
@@ -60,7 +60,7 @@ class Benchmark
 
             $totalIterations += $iterations;
 
-            $this->printer->subtitle($benckmark->title, $benckmark->comment, $iterations);
+            $this->printer?->subtitle($benckmark->title, $benckmark->comment, $iterations);
 
             $results = $benckmark->execute($iterations);
 
@@ -70,12 +70,12 @@ class Benchmark
             }
 
             $this->sort($results);
-            $this->printer->results($results);
+            $this->printer?->results($results);
 
-            $this->printer->skipline();
+            $this->printer?->skipline();
         }
 
-        $this->printer->subtitle('End result', "This is the final average considering all benchmarks previously run");
+        $this->printer?->subtitle('End result', "This is the final average considering all benchmarks previously run");
 
         $endResult = array_map(
             function ($results) {
@@ -88,25 +88,27 @@ class Benchmark
 
         $this->sort($endResult);
 
-        $this->printer->results($endResult, true);
+        $this->printer?->results($endResult, true);
 
-        $this->printer->skipline();
+        $this->printer?->skipline();
 
-        $this->printer->end(microtime(true) - $startTime, $totalBenchmarks, $totalIterations * $totalBenchmarks);
+        $this->printer?->end(microtime(true) - $startTime, $totalBenchmarks, $totalIterations * $totalBenchmarks);
 
-        return $this;
+        return $endResult;
     }
 
     private function end(array $results): array
     {
         $resultsCount = count($results);
 
+        $skiped = array_filter($results, fn($i) => $i['status'] === Status::SKIPED);
         $success = array_filter($results, fn($i) => $i['status'] === Status::SUCCESS);
         $successCount = count($success);
 
-        $status = $successCount && $successCount === $resultsCount
+        $status = $skiped ? Status::SKIPED : ($successCount && $successCount === $resultsCount
             ? Status::SUCCESS
-            : ($successCount ? Status::PARTIAL : Status::FAILED);
+            : ($successCount ? Status::PARTIAL : Status::FAILED)
+        );
 
         $best = null;
         $average = null;
@@ -122,6 +124,11 @@ class Benchmark
             ];
 
             $average = array_sum($runnings) / count($runnings);
+        }
+
+        if ($status === Status::FAILED || $status === Status::PARTIAL) {
+            $failed = array_filter($results, fn($i) => $i['status'] === Status::FAILED);
+            $error = current($failed)['error'];
         }
 
         if ($status === Status::FAILED || $status === Status::PARTIAL) {

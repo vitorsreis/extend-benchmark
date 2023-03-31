@@ -13,4 +13,5 @@ enum Status: string
     case FAILED = 'failed';
     case PARTIAL = 'partial';
     case SUCCESS = 'success';
+    case SKIPED = 'skiped';
 }

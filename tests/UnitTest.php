@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace D5WHUB\Test\Extend\Benchmark;
 
+use D5WHUB\Extend\Benchmark\Benchmark;
+use D5WHUB\Extend\Benchmark\Benchmark\Collection;
 use D5WHUB\Extend\Benchmark\Benchmark\Test;
 use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
+use D5WHUB\Extend\Benchmark\Printer\Console;
 use D5WHUB\Extend\Benchmark\Utils\Status;
 use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassMethod;
 use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassMethodWithContruct;
@@ -47,6 +50,17 @@ class UnitTest extends TestCase
         $this->assertEmpty($result['hit']['throw']);
     }
 
+    public function testExpectReturnPartial(): void
+    {
+        ($agent = new Benchmark(__FUNCTION__))
+            ->createBenchmark(__FUNCTION__)
+            ->addTest('TT', [ 'return' => 'TEST' ], fn($__iteraction) => $__iteraction % 2 ? 'TEST' : 111);
+        $result = $agent->execute(2);
+
+        $this->assertEquals(Status::PARTIAL, $result['TT']['_']['status']);
+        $this->assertEquals([ 'Experct return "TEST", actual 111' ], $result['TT']['_']['error']);
+    }
+
     public function testExpectReturnFailed(): void
     {
         $result = (new Test(
@@ -59,6 +73,22 @@ class UnitTest extends TestCase
         $this->assertEquals('integer', $result['hit']['type']);
         $this->assertEquals(111, $result['hit']['return']);
         $this->assertEquals([ 'Experct return "TEST", actual 111' ], $result['error']);
+        $this->assertEmpty($result['hit']['output']);
+        $this->assertEmpty($result['hit']['throw']);
+    }
+
+    public function testExpectReturnSkiped(): void
+    {
+        $result = (new Test(
+            __FUNCTION__,
+            [ 'return' => 'TEST' ],
+            []
+        ))->execute(1);
+
+        $this->assertEquals(Status::SKIPED, $result['status']);
+        $this->assertEquals('skiped', $result['hit']['type']);
+        $this->assertEmpty($result['hit']['return']);
+        $this->assertEquals([ 'Empty callbacks...' ], $result['error']);
         $this->assertEmpty($result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }

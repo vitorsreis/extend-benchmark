@@ -31,7 +31,7 @@ class Console implements Printer
     {
         $title = trim($title);
         $this->withTime("\e[0;1;3m$title\n");
-        if ($comment = trim($comment)) {
+        if ($comment && $comment = trim($comment)) {
             $this->withTime("\e[0;1;3m$comment\n");
         }
         return $this;
@@ -46,7 +46,7 @@ class Console implements Printer
     public function subtitle(string $title, ?string $comment = null, ?int $iterations = null): self
     {
         $title = trim($title);
-        $comment = trim($comment);
+        $comment = $comment ? trim($comment) : '';
         $iterations = $iterations ? (" $iterations time" . ($iterations > 1 ? 's' : '')) : "";
         $comment = $comment ? " " . ($iterations ? "- " : "") . "$comment" : "";
 
@@ -106,6 +106,12 @@ class Console implements Printer
                             $result['_']['average'],
                             current($result['_']['error'])
                         );
+                    break;
+
+                case Status::SKIPED:
+                    $text = $end
+                        ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
+                        : sprintf("\e[0m| %s | \e[3;90mSkiped", $title);
                     break;
 
                 case Status::FAILED:

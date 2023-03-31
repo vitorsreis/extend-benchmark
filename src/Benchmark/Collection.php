@@ -81,15 +81,15 @@ class Collection
 
             for ($iteraction = 1; $iteraction <= $iterations; $iteraction++, $cursor++) {
                 if (!$first) {
-                    $this->printer->tmpclear();
+                    $this->printer?->tmpclear();
                 }
 
-                $this->printer->tmpwrite("→ [Running test $cursor/$total] $test->title $iteraction/$iterations");
+                $this->printer?->tmpwrite("→ [Running test $cursor/$total] $test->title $iteraction/$iterations");
                 $results[$test->title][] = $test->execute($iteraction, $this->callbackArgs, $this->constructArgs);
                 $first = false;
             }
         }
-        $this->printer->tmpclear();
+        $this->printer?->tmpclear();
 
         return $results;
     }

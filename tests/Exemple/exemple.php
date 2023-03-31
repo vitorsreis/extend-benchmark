@@ -12,7 +12,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 $agent = new Benchmark(
     'My Benchmark',
-    'This is my benchmark.'
+    'This is my benchmark.',
+    null
 );
 
 $agent
@@ -109,4 +110,4 @@ $agent
     );
 
 $agent
-    ->execute(5);
+    ->execute(1);
