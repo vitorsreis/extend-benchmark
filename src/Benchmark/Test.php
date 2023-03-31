@@ -139,30 +139,27 @@ readonly class Test
                     $keys[] = 'class';
                 }
             } elseif (is_array($this->experct['throw'])) {
-                if (isset($this->experct['throw']['class'])
+                if (array_key_exists('class', $this->experct['throw'])
                     && $this->experct['throw']['class'] !== ($result['throw']['class'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'class';
                 }
-                if (isset($this->experct['throw']['code'])
+                if (array_key_exists('code', $this->experct['throw'])
                     && $this->experct['throw']['code'] !== ($result['throw']['code'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'code';
                 }
-
-                if (isset($this->experct['throw']['message'])
+                if (array_key_exists('message', $this->experct['throw'])
                     && $this->experct['throw']['message'] !== ($result['throw']['message'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'message';
                 }
-
-                if (isset($this->experct['throw']['file'])
+                if (array_key_exists('file', $this->experct['throw'])
                     && $this->experct['throw']['file'] !== ($result['throw']['file'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'file';
                 }
-
-                if (isset($this->experct['throw']['line'])
+                if (array_key_exists('line', $this->experct['throw'])
                     && $this->experct['throw']['line'] !== ($result['throw']['line'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'line';
