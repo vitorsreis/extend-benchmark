@@ -100,9 +100,9 @@ class Benchmark
             $this->sort($endResult);
 
             $this->printer?->results($endResult, true);
-        }
 
-        $this->printer?->skipline();
+            $this->printer?->skipline();
+        }
 
         $this->printer?->end(microtime(true) - $startTime, $totalBenchmarks, $totalIterations);
 
