@@ -88,7 +88,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::SKIPPED, $result['status']);
         $this->assertEquals('skipped', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Empty callbacks...' ], $result['error']);
+        $this->assertEquals([ 'Skipped, empty callbacks...' ], $result['error']);
         $this->assertEmpty($result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }

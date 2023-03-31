@@ -110,7 +110,7 @@ HTML
         $best = current($results)['_']['average'];
 
         foreach ($results as $title => $result) {
-            $title = str_replace(' ', "&nbsp;", str_pad($title, $pad, ' '));
+            $title = str_replace(' ', "&nbsp;", str_pad($title, $pad));
 
             $text = '';
 

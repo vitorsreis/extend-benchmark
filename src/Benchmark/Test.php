@@ -114,7 +114,6 @@ readonly class Test
 
         $status = Status::SUCCESS;
         $error = [];
-        $forceThrow = false;
 
         if (array_key_exists('throw', $this->experct ?? [])) {
             $keys = [];
