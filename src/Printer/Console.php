@@ -16,13 +16,13 @@ class Console implements Printer
     private function withTime(string ...$values): void
     {
         foreach ($values as $value) {
-            echo "\e[0;37m[" . date('Y-m-d H:i:s') . "] $value";
+            echo "\e[0;90m[" . date('Y-m-d H:i:s') . "] $value";
         }
     }
 
     public function start(): self
     {
-        $this->withTime("\e[3;37mD5WHUB Extend Benchmark\n");
+        $this->withTime("\e[3;90mD5WHUB Extend Benchmark\n");
         $this->skipline();
         return $this;
     }
@@ -50,14 +50,14 @@ class Console implements Printer
         $iterations = $iterations ? (" $iterations time" . ($iterations > 1 ? 's' : '')) : "";
         $comment = $comment ? " " . ($iterations ? "- " : "") . "$comment" : "";
 
-        $this->withTime("\e[0;1m• \e[4;34m$title\e[0;1;37m$iterations$comment\n");
+        $this->withTime("\e[0;1m• \e[4;34m$title\e[0;1;90m$iterations$comment\n");
         return $this;
     }
 
     public function tmpwrite(string $text): self
     {
         $text = trim($text);
-        $this->withTime("\e[37m$text");
+        $this->withTime("\e[90m$text");
         return $this;
     }
 
@@ -99,7 +99,7 @@ class Console implements Printer
 
                 case Status::PARTIAL:
                     $text = $end
-                        ? sprintf("\e[0m| %s | \e[3;37mNot conclusive", $title)
+                        ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
                         : sprintf(
                             "\e[0m| %s | %.11fs | \e[3;33mPartial success, failed: %s",
                             $title,
@@ -110,7 +110,7 @@ class Console implements Printer
 
                 case Status::FAILED:
                     $text = $end
-                        ? sprintf("\e[0m| %s | \e[3;37mNot conclusive", $title)
+                        ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
                         : sprintf("\e[0m| %s | \e[3;31mFailed: %s", $title, current($result['_']['error']));
                     break;
             }
@@ -122,7 +122,7 @@ class Console implements Printer
     public function end(float $runningTime, int $totalBenchmark, int $totalInteractions): self
     {
         $this->withTime(sprintf(
-            "\e[3;37mEnd %.11fs, %d benchmark%s and %d interaction%s\n",
+            "\e[3;90mEnd %.11fs, %d benchmark%s and %d interaction%s\e[0m\n",
             $runningTime,
             $totalBenchmark,
             $totalBenchmark > 1 ? 's' : '',

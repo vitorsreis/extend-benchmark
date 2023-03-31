@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 use D5WHUB\Extend\Benchmark\Benchmark;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 $agent = new Benchmark(
     'My Benchmark',
@@ -96,9 +96,9 @@ $agent
         }
     )->addTest(
         'Error2',
-        [ 'return' => 'TEST' ],
+        [ 'throw' => null ],
         function () {
-            return 1;
+            throw new Exception('Error', 123);
         }
     )->addTest(
         'Partial2',

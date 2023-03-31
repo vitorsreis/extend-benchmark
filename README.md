@@ -1,5 +1,5 @@
 # Simple benchmark for PHP 8.2
-With this simple and elegant benchmark, it's possible to create multiple tests with multiple callbacks at once.
+With this simple and elegant benchmark, you can create multiple tests with multiple callbacks at once and output tests in real time.
 
 ## Install
 ```shell

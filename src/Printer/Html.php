@@ -25,7 +25,7 @@ class Html implements Printer
     private function withTime(string ...$values): void
     {
         foreach ($values as $value) {
-            $this->flush("<span class='m0 m37'>[" . date('Y-m-d H:i:s') . "] $value</span>");
+            $this->flush("<span class='m0 m90'>[" . date('Y-m-d H:i:s') . "] $value</span>");
         }
     }
 
@@ -50,7 +50,7 @@ class Html implements Printer
 .m0{font-weight:400}
 .m1{font-weight:bold}
 .m3{font-style:italic}
-.m37{color:#AAA}
+.m90{color:#777}
 .m33{color:#f88d00}
 .m31{color:#f80000}
 .m36{color:#00b6f8}
@@ -59,7 +59,7 @@ class Html implements Printer
 <body>
 HTML
         );
-        $this->withTime("<span class='m3 m37'>D5WHUB Extend Benchmark</span><br>");
+        $this->withTime("<span class='m3 m90'>D5WHUB Extend Benchmark</span><br>");
         $this->skipline();
         return $this;
     }
@@ -87,14 +87,14 @@ HTML
         $iterations = $iterations ? (" $iterations time" . ($iterations > 1 ? 's' : '')) : "";
         $comment = $comment ? " " . ($iterations ? "- " : "") . "$comment" : "";
 
-        $this->withTime("<span class='m36'>• $title</span><span class='m37'>$iterations$comment</span><br>");
+        $this->withTime("<span class='m36'>• $title</span><span class='m90'>$iterations$comment</span><br>");
         return $this;
     }
 
     public function tmpwrite(string $text): self
     {
         $text = trim($text);
-        $this->withTime("<span class='m37 tmp'>$text</span>");
+        $this->withTime("<span class='m90 tmp'>$text</span>");
         return $this;
     }
 
@@ -136,7 +136,7 @@ HTML
 
                 case Status::PARTIAL:
                     $text = $end
-                        ? sprintf("<span class='m0'>| %s | </span><span class='m3 m37'>Not conclusive</span>", $title)
+                        ? sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Not conclusive</span>", $title)
                         : sprintf(
                             "<span class='m0'>| %s | %.11fs | <span class='m3 m33'>Partial success, failed: %s</span>",
                             $title,
@@ -147,7 +147,7 @@ HTML
 
                 case Status::FAILED:
                     $text = $end
-                        ? sprintf("<span class='m0'>| %s | </span><span class='m3 m37'>Not conclusive</span>", $title)
+                        ? sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Not conclusive</span>", $title)
                         : sprintf(
                             "<span class='m0'>| %s | </span><span class='m3 m31'>Failed: %s",
                             $title,
@@ -163,7 +163,7 @@ HTML
     public function end(float $runningTime, int $totalBenchmark, int $totalInteractions): self
     {
         $this->withTime(sprintf(
-            "<span class='m3 m37'>End %.11fs, %d benchmark%s and %d interaction%s</span><br>",
+            "<span class='m3 m90'>End %.11fs, %d benchmark%s and %d interaction%s</span><br>",
             $runningTime,
             $totalBenchmark,
             $totalBenchmark > 1 ? 's' : '',
