@@ -108,7 +108,7 @@ readonly class Test
         if ($result['type'] === 'skiped') {
             return [
                 'status' => Status::SKIPED,
-                'error' => [ "Empty callbacks..." ]
+                'error' => [ $this->experct['skiped'] ?? "Skiped, empty callbacks..." ]
             ];
         }
 

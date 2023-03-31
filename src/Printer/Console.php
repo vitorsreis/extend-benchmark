@@ -113,7 +113,7 @@ class Console implements Printer
                 case Status::SKIPED:
                     $text = $end
                         ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
-                        : sprintf("\e[0m| %s | \e[3;90mSkiped", $title);
+                        : sprintf("\e[0m| %s | \e[3;90m%s", $title, current($result['_']['error']));
                     break;
 
                 case Status::FAILED:

@@ -137,14 +137,19 @@ HTML
                 case Status::SKIPED:
                     $text = $end
                         ? sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Not conclusive</span>", $title)
-                        : sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Skiped</span>", $title);
+                        : sprintf(
+                            "<span class='m0'>| %s | </span><span class='m3 m90'>%s</span>",
+                            $title,
+                            current($result['_']['error'])
+                        );
                     break;
 
                 case Status::PARTIAL:
                     $text = $end
                         ? sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Not conclusive</span>", $title)
                         : sprintf(
-                            "<span class='m0'>| %s | %.11fs | <span class='m3 m33'>Partial success %s/%s, failed: %s</span>",
+                            "<span class='m0'>| %s | %.11fs | "
+                            . "<span class='m3 m33'>Partial success %s/%s, failed: %s</span>",
                             $title,
                             $result['_']['average'],
                             count(array_filter(array_slice($result, 1), fn($i) => $i['status'] === Status::SUCCESS)),

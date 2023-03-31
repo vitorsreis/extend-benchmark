@@ -135,6 +135,11 @@ class Benchmark
             $error = current($failed)['error'];
         }
 
+        if ($status === Status::SKIPED) {
+            $skiped = array_filter($results, fn($i) => $i['status'] === Status::SKIPED);
+            $error = current($skiped)['error'];
+        }
+
         return [
             '_' => [
                 'status' => $status,
