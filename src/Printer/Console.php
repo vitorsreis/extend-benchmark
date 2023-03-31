@@ -16,7 +16,7 @@ class Console implements Printer
     private function withTime(string ...$values): void
     {
         foreach ($values as $value) {
-            echo "\e[0;90m[" . date('Y-m-d H:i:s') . "] $value";
+            echo "\e[0;90m[" . date('Y-m-d H:i:s') . "] $value\e[0m";
         }
     }
 
