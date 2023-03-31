@@ -11,8 +11,8 @@ use D5WHUB\Extend\Benchmark\Benchmark;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $agent = new Benchmark(
-    'Router libraries benchmark',
-    'The purpose of this benchmark is to compare various php-router libraries in different scenarios.'
+    'My Benchmark',
+    'This is my benchmark.'
 );
 
 $agent
