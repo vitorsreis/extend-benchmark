@@ -50,6 +50,8 @@ $agent->execute(
 ```php
 • null // Use null to any result
 • array( // or array of expected results, if omitted, the test will be considered successful
+    "type"   => string, // output|throw|skiped or return value type
+    
     "return" => mixed, // [optional] accept callback return value
     
     "output" => null, // [optional] not accept callback output
@@ -76,7 +78,7 @@ $__iteraction = int
 
 // Partial test returns
 $__partial = array(
-    "type"   => string, // pending|output|throw or return value type
+    "type"   => string, // pending|output|throw|skiped or return value type
     "return" => mixed,
     "output" => null|string,
     "throw"  => null|array(
