@@ -58,13 +58,12 @@ class Benchmark
         foreach ($this->benchmarks as $benckmark) {
             $benckmark_iterations = $benckmark->iterations ?: $iterations ?: 1;
 
-            $totalIterations += $benckmark_iterations;
-
             $this->printer?->subtitle($benckmark->title, $benckmark->comment, $benckmark_iterations);
 
             $results = $benckmark->execute($benckmark_iterations);
 
             foreach ($results as $testTitle => &$testResult) {
+                $totalIterations += $benckmark_iterations;
                 $testResult = $this->end($testResult);
                 $endResult[$testTitle][] = $testResult;
             }
@@ -92,7 +91,7 @@ class Benchmark
 
         $this->printer?->skipline();
 
-        $this->printer?->end(microtime(true) - $startTime, $totalBenchmarks, $totalIterations * $totalBenchmarks);
+        $this->printer?->end(microtime(true) - $startTime, $totalBenchmarks, $totalIterations);
 
         return $endResult;
     }
