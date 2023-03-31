@@ -47,14 +47,14 @@ class Console implements Printer
     {
         $title = trim($title);
         $comment = trim($comment);
-        $iterations = $iterations ? " $iterations time(s)" : "";
+        $iterations = $iterations ? (" $iterations time" . ($iterations > 1 ? 's' : '')) : "";
         $comment = $comment ? " " . ($iterations ? "- " : "") . "$comment" : "";
 
         $this->withTime("\e[0;1m• \e[4;34m$title\e[0;1;37m$iterations$comment\n");
         return $this;
     }
 
-    public function tmp(string $text): self
+    public function tmpwrite(string $text): self
     {
         $text = trim($text);
         $this->withTime("\e[37m$text");
@@ -122,10 +122,12 @@ class Console implements Printer
     public function end(float $runningTime, int $totalBenchmark, int $totalInteractions): self
     {
         $this->withTime(sprintf(
-            "\e[3;37mEnd %.11fs, %d benchmark(s) and %d interaction(s)\n",
+            "\e[3;37mEnd %.11fs, %d benchmark%s and %d interaction%s\n",
             $runningTime,
             $totalBenchmark,
-            $totalInteractions
+            $totalBenchmark > 1 ? 's' : '',
+            $totalInteractions,
+            $totalInteractions > 1 ? 's' : ''
         ));
         return $this;
     }

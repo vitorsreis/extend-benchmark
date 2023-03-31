@@ -30,6 +30,20 @@ class Collection
     ) {
     }
 
+    /**
+     * @param array{
+     *     type:string,
+     *     return:mixed,
+     *     output:null|string,
+     *     throw:null|array{
+     *         class:string,
+     *         message:string,
+     *         code:int,
+     *         line:int,
+     *         file:string
+     *     }
+     * }|null $experct
+     */
     public function addTest(
         string                $title,
         array|null            $experct,
@@ -54,7 +68,7 @@ class Collection
     /**
      * @throws BenchmarkException
      */
-    public function execute(int|null $iterations): array
+    public function execute(int $iterations): array
     {
         $first = true;
         $cursor = 1;
@@ -70,7 +84,7 @@ class Collection
                     $this->printer->tmpclear();
                 }
 
-                $this->printer->tmp("→ [Running test $cursor/$total] $test->title $iteraction/$iterations");
+                $this->printer->tmpwrite("→ [Running test $cursor/$total] $test->title $iteraction/$iterations");
                 $results[$test->title][] = $test->execute($iteraction, $this->callbackArgs, $this->constructArgs);
                 $first = false;
             }

@@ -77,7 +77,7 @@ $__iteraction = int
 // Partial test returns
 $__partial = array(
     "type"   => string, // pending|output|throw or return value type
-    "return" => null|mixed,
+    "return" => mixed,
     "output" => null|string,
     "throw"  => null|array(
         "class"   => string,

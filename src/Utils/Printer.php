@@ -20,7 +20,7 @@ interface Printer
 
     public function skipline(int $times = 1): self;
 
-    public function tmp(string $text): self;
+    public function tmpwrite(string $text): self;
 
     public function tmpclear(): self;
 

@@ -84,14 +84,14 @@ HTML
     {
         $title = trim($title);
         $comment = trim($comment);
-        $iterations = $iterations ? " $iterations time(s)" : "";
+        $iterations = $iterations ? (" $iterations time" . ($iterations > 1 ? 's' : '')) : "";
         $comment = $comment ? " " . ($iterations ? "- " : "") . "$comment" : "";
 
         $this->withTime("<span class='m36'>• $title</span><span class='m37'>$iterations$comment</span><br>");
         return $this;
     }
 
-    public function tmp(string $text): self
+    public function tmpwrite(string $text): self
     {
         $text = trim($text);
         $this->withTime("<span class='m37 tmp'>$text</span>");
@@ -163,10 +163,12 @@ HTML
     public function end(float $runningTime, int $totalBenchmark, int $totalInteractions): self
     {
         $this->withTime(sprintf(
-            "<span class='m3 m37'>End %.11fs, %d benchmark(s) and %d interaction(s)</span><br>",
+            "<span class='m3 m37'>End %.11fs, %d benchmark%s and %d interaction%s</span><br>",
             $runningTime,
             $totalBenchmark,
-            $totalInteractions
+            $totalBenchmark > 1 ? 's' : '',
+            $totalInteractions,
+            $totalInteractions > 1 ? 's' : ''
         ));
         $this->flush(<<<HTML
 </body>

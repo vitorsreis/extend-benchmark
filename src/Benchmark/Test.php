@@ -103,8 +103,8 @@ readonly class Test
             $status = Status::FAILED;
             $error[] = sprintf(
                 "Experct type %s, actual %s",
-                $this->parse($this->experct['type']),
-                $this->parse($result['type'])
+                $this->strvalue($this->experct['type']),
+                $this->strvalue($result['type'])
             );
         }
 
@@ -112,8 +112,8 @@ readonly class Test
             $status = Status::FAILED;
             $error[] = sprintf(
                 "Experct return %s, actual %s",
-                $this->parse($this->experct['return']),
-                $this->parse($result['return'])
+                $this->strvalue($this->experct['return']),
+                $this->strvalue($result['return'])
             );
         }
 
@@ -121,8 +121,8 @@ readonly class Test
             $status = Status::FAILED;
             $error[] = sprintf(
                 "Experct output %s, actual %s",
-                $this->parse($this->experct['output']),
-                $this->parse($result['output'])
+                $this->strvalue($this->experct['output']),
+                $this->strvalue($result['output'])
             );
         }
 
@@ -172,8 +172,8 @@ readonly class Test
             if ($keys) {
                 $error[] = sprintf(
                     "Experct throw %s, actual %s",
-                    $this->parse($this->experct['throw'], $keys),
-                    $this->parse($result['throw'] ?? null, $keys)
+                    $this->strvalue($this->experct['throw'], $keys),
+                    $this->strvalue($result['throw'] ?? null, $keys)
                 );
             }
         }
@@ -184,7 +184,7 @@ readonly class Test
         ];
     }
 
-    private static function parse(mixed $value, array $throw = []): string
+    private static function strvalue(mixed $value, array $throw = []): string
     {
         if (is_null($value)) {
             return 'null';
@@ -197,16 +197,16 @@ readonly class Test
                     ? sprintf("code:\"%s\"", $value['code']) : null,
 
                 in_array('message', $throw) && isset($value['message'])
-                    ? sprintf("message:\"%s\"", self::limited($value['message'])) : null,
+                    ? sprintf("message:\"%s\"", self::strlimited($value['message'])) : null,
 
                 in_array('file', $throw) && isset($value['file'])
-                    ? sprintf("file:\"%s\"", self::limited($value['file'], true)) : null,
+                    ? sprintf("file:\"%s\"", self::strlimited($value['file'], true)) : null,
 
                 in_array('line', $throw) && isset($value['line'])
                     ? sprintf("line:\"%s\"", $value['line']) : null
             ])));
         } elseif (is_array($value)) {
-            return sprintf("array{%s}", self::limited(
+            return sprintf("array{%s}", self::strlimited(
                 substr(json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT), 1, -1)
             ));
         } elseif (is_object($value)) {
@@ -216,7 +216,7 @@ readonly class Test
         }
     }
 
-    private static function limited(mixed $value, bool $inverse = false): string
+    private static function strlimited(mixed $value, bool $inverse = false): string
     {
         $value = strval($value);
 
