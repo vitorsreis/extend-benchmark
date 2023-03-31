@@ -100,11 +100,11 @@ class Benchmark
     {
         $resultsCount = count($results);
 
-        $skiped = array_filter($results, fn($i) => $i['status'] === Status::SKIPED);
+        $skipped = array_filter($results, fn($i) => $i['status'] === Status::SKIPPED);
         $success = array_filter($results, fn($i) => $i['status'] === Status::SUCCESS);
         $successCount = count($success);
 
-        $status = $skiped ? Status::SKIPED : ($successCount && $successCount === $resultsCount
+        $status = $skipped ? Status::SKIPPED : ($successCount && $successCount === $resultsCount
             ? Status::SUCCESS
             : ($successCount ? Status::PARTIAL : Status::FAILED)
         );
@@ -135,9 +135,9 @@ class Benchmark
             $error = current($failed)['error'];
         }
 
-        if ($status === Status::SKIPED) {
-            $skiped = array_filter($results, fn($i) => $i['status'] === Status::SKIPED);
-            $error = current($skiped)['error'];
+        if ($status === Status::SKIPPED) {
+            $skipped = array_filter($results, fn($i) => $i['status'] === Status::SKIPPED);
+            $error = current($skipped)['error'];
         }
 
         return [

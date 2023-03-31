@@ -63,7 +63,7 @@ readonly class Test
         $startTime = microtime(true);
         if (empty($this->callbacks)) {
             $partial = [
-                'type' => 'skiped',
+                'type' => 'skipped',
                 'return' => null,
                 'output' => null,
                 'throw' => null
@@ -105,10 +105,10 @@ readonly class Test
      */
     private function experct(array $result): array
     {
-        if ($result['type'] === 'skiped') {
+        if ($result['type'] === 'skipped') {
             return [
-                'status' => Status::SKIPED,
-                'error' => [ $this->experct['skiped'] ?? "Skiped, empty callbacks..." ]
+                'status' => Status::SKIPPED,
+                'error' => [ $this->experct['skipped'] ?? "Skipped, empty callbacks..." ]
             ];
         }
 

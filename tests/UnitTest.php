@@ -77,7 +77,7 @@ class UnitTest extends TestCase
         $this->assertEmpty($result['hit']['throw']);
     }
 
-    public function testExpectReturnSkiped(): void
+    public function testExpectReturnSkipped(): void
     {
         $result = (new Test(
             __FUNCTION__,
@@ -85,8 +85,8 @@ class UnitTest extends TestCase
             []
         ))->execute(1);
 
-        $this->assertEquals(Status::SKIPED, $result['status']);
-        $this->assertEquals('skiped', $result['hit']['type']);
+        $this->assertEquals(Status::SKIPPED, $result['status']);
+        $this->assertEquals('skipped', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
         $this->assertEquals([ 'Empty callbacks...' ], $result['error']);
         $this->assertEmpty($result['hit']['output']);

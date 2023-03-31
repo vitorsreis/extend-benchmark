@@ -62,11 +62,11 @@ $agent
             return $__iteraction % 2 ? 'TEST' : 'AAA';
         }
     )->addTest(
-        'Skiped1',
+        'Skipped1',
         null
     )->addTest(
-        'Skiped2',
-        [ 'skiped' => 'Skiped custom message' ]
+        'Skipped2',
+        [ 'skipped' => 'Skipped custom message' ]
     );
 
 $agent
@@ -113,11 +113,11 @@ $agent
             return $__iteraction % 2 ? 'TEST' : (object)['aa' => 'bb'];
         }
     )->addTest(
-        'Skiped1',
+        'Skipped1',
         null
     )->addTest(
-        'Skiped2',
-        [ 'skiped' => 'Skiped custom message' ]
+        'Skipped2',
+        [ 'skipped' => 'Skipped custom message' ]
     );
 
 $agent

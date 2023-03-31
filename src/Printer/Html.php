@@ -134,7 +134,7 @@ HTML
                     }
                     break;
 
-                case Status::SKIPED:
+                case Status::SKIPPED:
                     $text = $end
                         ? sprintf("<span class='m0'>| %s | </span><span class='m3 m90'>Not conclusive</span>", $title)
                         : sprintf(
