@@ -58,7 +58,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('integer', $result['hit']['type']);
         $this->assertEquals(111, $result['hit']['return']);
-        $this->assertEquals([ 'Experct return string{TEST}, actual integer{111}' ], $result['error']);
+        $this->assertEquals([ 'Experct return "TEST", actual 111' ], $result['error']);
         $this->assertEmpty($result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }
@@ -90,7 +90,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('output', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Experct output string{TEST}, actual string{111}' ], $result['error']);
+        $this->assertEquals([ 'Experct output "TEST", actual "111"' ], $result['error']);
         $this->assertEquals(111, $result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }
@@ -125,11 +125,11 @@ class UnitTest extends TestCase
         $this->assertEquals(
             [
                 sprintf(
-                    'Experct throw null, actual throw{class:"%s",code:"%s",message:"%s",file:"%s",line:"%s"}',
+                    'Experct throw NULL, actual throw{class:"%s",code:"%s",message:"%s",file:"%s",line:"%s"}',
                     Exception::class,
                     E_ERROR,
                     'TEST',
-                    strlen(__FILE__) > 30 ? "..." . substr(__FILE__, -27) : __FILE__,
+                    strlen(__FILE__) > 50 ? "..." . substr(__FILE__, -47) : __FILE__,
                     __LINE__ - 14
                 )
             ],
@@ -356,7 +356,7 @@ class UnitTest extends TestCase
         $this->assertEquals([
             sprintf(
                 "Experct throw throw{file:\"xxx\"}, actual throw{file:\"%s\"}",
-                strlen(__FILE__) > 30 ? "..." . substr(__FILE__, -27) : __FILE__,
+                strlen(__FILE__) > 50 ? "..." . substr(__FILE__, -47) : __FILE__,
             )
         ], $result['error']);
         $this->assertEmpty($result['hit']['output']);

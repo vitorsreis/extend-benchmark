@@ -189,9 +189,15 @@ readonly class Test
     private static function strvalue(mixed $value, array $throw = []): string
     {
         if (is_null($value) || (is_string($value) && strtoupper("$value") === "NULL")) {
-            return 'null';
+            return 'NULL';
         } elseif (is_string($value)) {
             return "\"$value\"";
+        } elseif (is_bool($value)) {
+            return $value ? "TRUE" : 'FALSE';
+        } elseif (is_int($value)) {
+            return "$value" ?: "0";
+        } elseif (is_float($value)) {
+            return "$value" ?: "0.0";
         } elseif ($throw && is_array($value)) {
             return sprintf("throw{%s}", implode(',', array_filter([
                 in_array('class', $throw) && array_key_exists('class', $value)
