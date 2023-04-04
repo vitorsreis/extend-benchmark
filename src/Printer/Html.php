@@ -25,7 +25,7 @@ class Html implements Printer
     public function withTime(string ...$values): self
     {
         foreach ($values as $value) {
-            $this->flush("<span class='m0 m90'>[" . date('Y-m-d H:i:s') . "] </span>$value");
+            $this->flush("<span class='m0 m90'>[" . date('Y-m-d H:i:s') . "] $value</span>");
         }
         return $this;
     }
