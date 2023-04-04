@@ -124,7 +124,7 @@ HTML
                             $result['_']['average']
                         );
                     } else {
-                        $slower = round((1 - $result['_']['average'] / $best) * 100, 2) * -1;
+                        $slower = round((1 - $result['_']['average'] / $best) * 100 * -1, 1);
                         $text = sprintf(
                             "<span class='m0'>| %s | %.11fs | %s (+%.11fs)</span>",
                             $title,

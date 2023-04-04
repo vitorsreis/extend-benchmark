@@ -87,7 +87,7 @@ class Console implements Printer
                             $result['_']['average']
                         );
                     } else {
-                        $slower = round(($result['_']['average'] / $best) * 100, 2);
+                        $slower = round((1 - $result['_']['average'] / $best) * 100 * -1, 1);
                         $text = sprintf(
                             "\e[0m| %s | %.11fs | %s (+%.11fs)",
                             $title,
