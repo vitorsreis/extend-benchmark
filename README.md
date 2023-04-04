@@ -1,4 +1,10 @@
 # Simple benchmark for PHP 8.2
+[![Latest Stable Version](https://poser.pugx.org/d5whub/extend-benchmark/v/stable)](https://packagist.org/packages/d5whub/extend-benchmark)
+[![PHP Version Require](http://poser.pugx.org/d5whub/extend-benchmark/require/php)](https://packagist.org/packages/d5whub/extend-benchmark)
+[![Monthly Downloads](https://poser.pugx.org/d5whub/extend-benchmark/d/monthly)](https://packagist.org/packages/d5whub/extend-benchmark)
+[![Total Downloads](https://poser.pugx.org/d5whub/extend-benchmark/downloads)](https://packagist.org/packages/d5whub/extend-benchmark)
+[![License](https://poser.pugx.org/d5whub/extend-benchmark/license)](https://packagist.org/packages/d5whub/extend-benchmark)
+
 With this simple and elegant benchmark, you can create multiple tests with multiple callbacks at once and output tests in real time.
 
 ## Install
