@@ -11,13 +11,13 @@ namespace D5WHUB\Test\Extend\Benchmark\UnitTest;
 class MiddlewareByClassMethodWithContruct
 {
     public function __construct(
-        protected $__iteraction,
+        protected $__interaction,
         protected $__partial
     ) {
     }
 
     public function execute(): string
     {
-        return "$this->__iteraction:{$this->__partial['return']}:test";
+        return "$this->__interaction:{$this->__partial['return']}:test";
     }
 }

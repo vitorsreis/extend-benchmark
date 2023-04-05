@@ -54,11 +54,11 @@ class UnitTest extends TestCase
     {
         ($agent = new Benchmark(__FUNCTION__))
             ->createBenchmark(__FUNCTION__)
-            ->addTest('TT', [ 'return' => 'TEST' ], fn($__iteraction) => $__iteraction % 2 ? 'TEST' : 111);
+            ->addTest('TT', [ 'return' => 'TEST' ], fn($__interaction) => $__interaction % 2 ? 'TEST' : 111);
         $result = $agent->execute(2);
 
         $this->assertEquals(Status::PARTIAL, $result['TT']['_']['status']);
-        $this->assertEquals([ 'Experct return "TEST", actual 111' ], $result['TT']['_']['error']);
+        $this->assertEquals([ 'Expect return "TEST", actual 111' ], $result['TT']['_']['error']);
     }
 
     public function testExpectReturnFailed(): void
@@ -72,7 +72,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('integer', $result['hit']['type']);
         $this->assertEquals(111, $result['hit']['return']);
-        $this->assertEquals([ 'Experct return "TEST", actual 111' ], $result['error']);
+        $this->assertEquals([ 'Expect return "TEST", actual 111' ], $result['error']);
         $this->assertEmpty($result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }
@@ -120,7 +120,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('output', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Experct output "TEST", actual "111"' ], $result['error']);
+        $this->assertEquals([ 'Expect output "TEST", actual "111"' ], $result['error']);
         $this->assertEquals(111, $result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }
@@ -155,7 +155,7 @@ class UnitTest extends TestCase
         $this->assertEquals(
             [
                 sprintf(
-                    'Experct throw NULL, actual throw{class:"%s",code:"%s",message:"%s",file:"%s",line:"%s"}',
+                    'Expect throw NULL, actual throw{class:"%s",code:"%s",message:"%s",file:"%s",line:"%s"}',
                     Exception::class,
                     E_ERROR,
                     'TEST',
@@ -207,7 +207,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Experct throw throw{class:"xxx"}, actual throw{class:"Exception"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals([ 'Expect throw throw{class:"xxx"}, actual throw{class:"Exception"}' ], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -251,7 +251,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Experct throw throw{message:"xxx"}, actual throw{message:"TEST"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals([ 'Expect throw throw{message:"xxx"}, actual throw{message:"TEST"}' ], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -295,7 +295,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Experct throw throw{code:"111"}, actual throw{code:"1"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals([ 'Expect throw throw{code:"111"}, actual throw{code:"1"}' ], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -339,7 +339,7 @@ class UnitTest extends TestCase
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Experct throw throw{line:"1"}, actual throw{line:"' . (__LINE__ - 6) . '"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals([ 'Expect throw throw{line:"1"}, actual throw{line:"' . (__LINE__ - 6) . '"}' ], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -385,7 +385,7 @@ class UnitTest extends TestCase
         $this->assertEmpty($result['hit']['return']);
         $this->assertEquals([
             sprintf(
-                "Experct throw throw{file:\"xxx\"}, actual throw{file:\"%s\"}",
+                "Expect throw throw{file:\"xxx\"}, actual throw{file:\"%s\"}",
                 strlen(__FILE__) > 50 ? "..." . substr(__FILE__, -47) : __FILE__,
             )
         ], $result['error']);
@@ -401,9 +401,9 @@ class UnitTest extends TestCase
 
     public function testWithMiddlewareByFunctionName()
     {
-        function middlewareNamedFunction($__iteraction, $__partial): string
+        function middlewareNamedFunction($__interaction, $__partial): string
         {
-            return "$__iteraction:$__partial[return]:test";
+            return "$__interaction:$__partial[return]:test";
         }
 
         $result = (new Test(
@@ -441,8 +441,8 @@ class UnitTest extends TestCase
         $result = (new Test(
             __FUNCTION__,
             null,
-            [ function ($__iteraction, $__partial) {
-                return "$__iteraction:$__partial[return]:test";
+            [ function ($__interaction, $__partial) {
+                return "$__interaction:$__partial[return]:test";
             } ]
         ))->execute(1);
 
@@ -459,7 +459,7 @@ class UnitTest extends TestCase
         $result = (new Test(
             __FUNCTION__,
             null,
-            [ fn ($__iteraction, $__partial) => "$__iteraction:$__partial[return]:test" ]
+            [ fn ($__interaction, $__partial) => "$__interaction:$__partial[return]:test" ]
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -472,7 +472,7 @@ class UnitTest extends TestCase
 
     public function testWithMiddlewareByVariableFunction()
     {
-        $varfunc = fn ($__iteraction, $__partial) => "$__iteraction:$__partial[return]:test";
+        $varfunc = fn ($__interaction, $__partial) => "$__interaction:$__partial[return]:test";
 
         $result = (new Test(
             __FUNCTION__,
@@ -662,11 +662,11 @@ class UnitTest extends TestCase
             __FUNCTION__,
             null,
             [
-                fn($__iteraction) => "$__iteraction:TEST",
-                fn($__iteraction, $__partial) => "$__partial[return]   $__iteraction:TEST",
-                fn($__iteraction, $__partial) => "$__partial[return]   $__iteraction:TEST",
-                fn($__iteraction, $__partial) => "$__partial[return]   $__iteraction:TEST",
-                fn($__iteraction, $__partial) => "$__partial[return]   $__iteraction:TEST",
+                fn($__interaction) => "$__interaction:TEST",
+                fn($__interaction, $__partial) => "$__partial[return]   $__interaction:TEST",
+                fn($__interaction, $__partial) => "$__partial[return]   $__interaction:TEST",
+                fn($__interaction, $__partial) => "$__partial[return]   $__interaction:TEST",
+                fn($__interaction, $__partial) => "$__partial[return]   $__interaction:TEST",
             ]
         ))->execute(1);
 

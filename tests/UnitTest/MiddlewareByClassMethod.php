@@ -10,8 +10,8 @@ namespace D5WHUB\Test\Extend\Benchmark\UnitTest;
 
 class MiddlewareByClassMethod
 {
-    public function execute($__iteraction, $__partial): string
+    public function execute($__interaction, $__partial): string
     {
-        return "$__iteraction:$__partial[return]:test";
+        return "$__interaction:$__partial[return]:test";
     }
 }

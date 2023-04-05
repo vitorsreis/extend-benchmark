@@ -82,7 +82,7 @@ $agent->execute(
 ###### • There are 2 magic arguments that are automatically filled when detected in the call.
 ```php
 // Current interaction number
-$__iteraction = int
+$__interaction = int
 
 // Partial test returns
 $__partial = array(
@@ -114,7 +114,7 @@ $benchmark->argsByMethods([
 $benchmark->addTest(
     '<title>',
     '<expected result>', // Expected result
-    fn ($arg1, $__iteraction, $arg2, $__partial) => ..., // arrow function
+    fn ($arg1, $__interaction, $arg2, $__partial) => ..., // arrow function
 )
 ```
 ###### Supported callbacks

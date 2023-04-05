@@ -22,7 +22,7 @@ readonly class Test
 
     public function __construct(
         public string     $title,
-        public array|null $experct,
+        public array|null $expect,
         public array      $callbacks
     ) {
     }
@@ -51,7 +51,7 @@ readonly class Test
      * }
      * @throws BenchmarkException
      */
-    public function execute(int $iteraction, array $callbackArgs = [], array $constructArgs = []): array
+    public function execute(int $interaction, array $callbackArgs = [], array $constructArgs = []): array
     {
         $partial = [
             'type' => 'pending',
@@ -72,12 +72,12 @@ readonly class Test
             foreach ($this->callbacks as $callback) {
                 $partial = $this->callback($callback, [
                     ...$callbackArgs,
-                    '__iteraction' => $iteraction,
-                    '__partial' => $partial ?? ''
+                    '__interaction' => $interaction,
+                    '__partial' => $partial
                 ], [
                     ...$constructArgs,
-                    '__iteraction' => $iteraction,
-                    '__partial' => $partial ?? ''
+                    '__interaction' => $interaction,
+                    '__partial' => $partial
                 ]);
 
                 if ($partial['type'] === 'throw') {
@@ -92,7 +92,7 @@ readonly class Test
                 'start' => $startTime,
                 'running' => $runningTime
             ],
-            ...$this->experct($partial),
+            ...$this->expect($partial),
             'hit' => $partial
         ];
     }
@@ -103,53 +103,53 @@ readonly class Test
      *     error:string[]|null
      * }
      */
-    private function experct(array $result): array
+    private function expect(array $result): array
     {
         if ($result['type'] === 'skipped') {
             return [
                 'status' => Status::SKIPPED,
-                'error' => [ $this->experct['skipped'] ?? "Skipped, empty callbacks..." ]
+                'error' => [ $this->expect['skipped'] ?? "Skipped, empty callbacks..." ]
             ];
         }
 
         $status = Status::SUCCESS;
         $error = [];
 
-        if (array_key_exists('throw', $this->experct ?? [])) {
+        if (array_key_exists('throw', $this->expect ?? [])) {
             $keys = [];
 
-            if (is_null($this->experct['throw']) && $result['throw']) {
+            if (is_null($this->expect['throw']) && $result['throw']) {
                 $status = Status::FAILED;
                 $keys = [ 'class', 'message', 'code', 'line', 'file' ];
-            } elseif (is_string($this->experct['throw'])) {
-                if (isset($this->experct['throw']['class'])
-                    && $this->experct['throw']['class'] !== ($result['throw']['class'] ?? null)) {
+            } elseif (is_string($this->expect['throw'])) {
+                if (isset($this->expect['throw']['class'])
+                    && $this->expect['throw']['class'] !== ($result['throw']['class'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'class';
                 }
-            } elseif (is_array($this->experct['throw'])) {
-                if (array_key_exists('class', $this->experct['throw'])
-                    && $this->experct['throw']['class'] !== ($result['throw']['class'] ?? null)) {
+            } elseif (is_array($this->expect['throw'])) {
+                if (array_key_exists('class', $this->expect['throw'])
+                    && $this->expect['throw']['class'] !== ($result['throw']['class'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'class';
                 }
-                if (array_key_exists('code', $this->experct['throw'])
-                    && $this->experct['throw']['code'] !== ($result['throw']['code'] ?? null)) {
+                if (array_key_exists('code', $this->expect['throw'])
+                    && $this->expect['throw']['code'] !== ($result['throw']['code'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'code';
                 }
-                if (array_key_exists('message', $this->experct['throw'])
-                    && $this->experct['throw']['message'] !== ($result['throw']['message'] ?? null)) {
+                if (array_key_exists('message', $this->expect['throw'])
+                    && $this->expect['throw']['message'] !== ($result['throw']['message'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'message';
                 }
-                if (array_key_exists('file', $this->experct['throw'])
-                    && $this->experct['throw']['file'] !== ($result['throw']['file'] ?? null)) {
+                if (array_key_exists('file', $this->expect['throw'])
+                    && $this->expect['throw']['file'] !== ($result['throw']['file'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'file';
                 }
-                if (array_key_exists('line', $this->experct['throw'])
-                    && $this->experct['throw']['line'] !== ($result['throw']['line'] ?? null)) {
+                if (array_key_exists('line', $this->expect['throw'])
+                    && $this->expect['throw']['line'] !== ($result['throw']['line'] ?? null)) {
                     $status = Status::FAILED;
                     $keys[] = 'line';
                 }
@@ -157,41 +157,41 @@ readonly class Test
 
             if ($keys) {
                 $error[] = sprintf(
-                    "Experct throw %s, actual %s",
-                    $this->strvalue($this->experct['throw'], $keys),
-                    $this->strvalue($result['throw'] ?? null, $keys)
+                    "Expect throw %s, actual %s",
+                    $this->tostr($this->expect['throw'], $keys),
+                    $this->tostr($result['throw'] ?? null, $keys)
                 );
             }
         }
 
-        if (array_key_exists('output', $this->experct ?? []) && $result['output'] !== $this->experct['output']) {
+        if (array_key_exists('output', $this->expect ?? []) && $result['output'] !== $this->expect['output']) {
             $status = Status::FAILED;
             $error[] = sprintf(
-                "Experct output %s, actual %s",
-                $this->strvalue($this->experct['output']),
-                empty($result['throw']) || array_key_exists('throw', $this->experct ?? [])
-                    ? $this->strvalue($result['output'])
-                    : $this->strvalue($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
+                "Expect output %s, actual %s",
+                $this->tostr($this->expect['output']),
+                empty($result['throw']) || array_key_exists('throw', $this->expect ?? [])
+                    ? $this->tostr($result['output'])
+                    : $this->tostr($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
             );
         }
 
-        if (array_key_exists('return', $this->experct ?? []) && $result['return'] !== $this->experct['return']) {
+        if (array_key_exists('return', $this->expect ?? []) && $result['return'] !== $this->expect['return']) {
             $status = Status::FAILED;
             $error[] = sprintf(
-                "Experct return %s, actual %s",
-                $this->strvalue($this->experct['return']),
-                empty($result['throw']) || array_key_exists('throw', $this->experct ?? [])
-                    ? $this->strvalue($result['return'])
-                    : $this->strvalue($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
+                "Expect return %s, actual %s",
+                $this->tostr($this->expect['return']),
+                empty($result['throw']) || array_key_exists('throw', $this->expect ?? [])
+                    ? $this->tostr($result['return'])
+                    : $this->tostr($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
             );
         }
 
-        if (array_key_exists('type', $this->experct ?? []) && $result['type'] !== $this->experct['type']) {
+        if (array_key_exists('type', $this->expect ?? []) && $result['type'] !== $this->expect['type']) {
             $status = Status::FAILED;
             $error[] = sprintf(
-                "Experct type %s, actual %s",
-                $this->strvalue($this->experct['type']),
-                $this->strvalue($result['type'])
+                "Expect type %s, actual %s",
+                $this->tostr($this->expect['type']),
+                $this->tostr($result['type'])
             );
         }
 
@@ -201,7 +201,10 @@ readonly class Test
         ];
     }
 
-    private static function strvalue(mixed $value, array $throw = []): string
+    /**
+     * Convert mixed to string
+     */
+    private static function tostr(mixed $value, array $throw = []): string
     {
         if (is_null($value) || (is_string($value) && strtoupper("$value") === "NULL")) {
             return 'NULL';
@@ -216,7 +219,7 @@ readonly class Test
         } elseif ($throw && is_array($value)) {
             return sprintf("throw{%s}", implode(',', array_filter([
                 in_array('class', $throw) && array_key_exists('class', $value)
-                    ? sprintf("class:\"%s\"", self::strlimited($value['class'], true)) : null,
+                    ? sprintf("class:\"%s\"", self::limstr($value['class'], true)) : null,
 
                 in_array('code', $throw) && array_key_exists('code', $value)
                     ? sprintf("code:\"%s\"", $value['code']) : null,
@@ -225,21 +228,24 @@ readonly class Test
                     ? sprintf("message:\"%s\"", $value['message']) : null,
 
                 in_array('file', $throw) && array_key_exists('file', $value)
-                    ? sprintf("file:\"%s\"", self::strlimited($value['file'], true)) : null,
+                    ? sprintf("file:\"%s\"", self::limstr($value['file'], true)) : null,
 
                 in_array('line', $throw) && array_key_exists('line', $value)
                     ? sprintf("line:\"%s\"", $value['line']) : null
             ])));
         } elseif (is_array($value)) {
-            return sprintf("array{%s}", self::strlimited($value));
+            return sprintf("array{%s}", self::limstr($value));
         } elseif (is_object($value)) {
-            return sprintf("%s{%s}", basename(get_class($value)), self::strlimited($value));
+            return sprintf("%s{%s}", basename(get_class($value)), self::limstr($value));
         } else {
             return sprintf("%s{%s}", gettype($value), $value);
         }
     }
 
-    private static function strlimited(mixed $value, bool $inverse = false): string
+    /**
+     * Limit string size
+     */
+    private static function limstr(mixed $value, bool $inverse = false): string
     {
         if (is_array($value) || is_object($value)) {
             $value = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);

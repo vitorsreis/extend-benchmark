@@ -10,8 +10,8 @@ namespace D5WHUB\Test\Extend\Benchmark\UnitTest;
 
 class MiddlewareByClassStaticMethod
 {
-    public static function params($__iteraction, $__partial): string
+    public static function params($__interaction, $__partial): string
     {
-        return "$__iteraction:$__partial[return]:test";
+        return "$__interaction:$__partial[return]:test";
     }
 }

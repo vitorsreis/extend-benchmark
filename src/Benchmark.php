@@ -59,30 +59,29 @@ class Benchmark
         $totalBenchmarks = count($this->benchmarks);
         $totalIterations = 0;
 
-        foreach ($this->benchmarks as $benckmark) {
-            $benckmark_iterations = $benckmark->iterations ?: $iterations ?: 1;
+        foreach ($this->benchmarks as $benchmark) {
+            $benchmark_iterations = $benchmark->iterations ?: $iterations ?: 1;
 
-            $this->printer?->subtitle($benckmark->title, $benckmark->comment, $benckmark_iterations);
+            $this->printer?->subtitle($benchmark->title, $benchmark->comment, $benchmark_iterations);
 
-            $results = $benckmark->execute($benckmark_iterations);
+            $results = $benchmark->execute($benchmark_iterations);
 
             foreach ($results as $testTitle => &$testResult) {
-                $totalIterations += $benckmark_iterations;
-                if (!$benckmark->ignoreResults) {
+                $totalIterations += $benchmark_iterations;
+                if (!$benchmark->ignoreResults) {
                     $testResult = $this->end($testResult);
                     $endResult[$testTitle][] = $testResult;
                 }
             }
 
-            if (!$benckmark->ignoreResults) {
+            if (!$benchmark->ignoreResults) {
                 $this->sort($results);
                 $this->printer?->results($results);
 
-                $this->printer?->skipline();
             } else {
                 $this->printer?->withTime("| Ignored\n");
-                $this->printer?->skipline();
             }
+            $this->printer?->skipline();
         }
 
         if (!$ignoreEndResults) {
@@ -127,15 +126,15 @@ class Benchmark
         $error = null;
 
         if ($status === Status::SUCCESS || $status === Status::PARTIAL) {
-            $runnings = array_column(array_column($success, '_'), 'running');
+            $result = array_column(array_column($success, '_'), 'running');
 
-            asort($runnings);
+            asort($result);
             $best = [
-                current($runnings),
-                key($runnings)
+                current($result),
+                key($result)
             ];
 
-            $average = array_sum($runnings) / count($runnings);
+            $average = array_sum($result) / count($result);
         }
 
         if ($status === Status::FAILED || $status === Status::PARTIAL) {

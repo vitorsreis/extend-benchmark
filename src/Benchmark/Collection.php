@@ -43,14 +43,14 @@ class Collection
      *         line:int,
      *         file:string
      *     }
-     * }|null $experct
+     * }|null $expect
      */
     public function addTest(
         string                $title,
-        array|null            $experct,
+        array|null            $expect,
         array|callable|string ...$callback
     ): self {
-        $this->collection[] = new Test($title, $experct, $callback);
+        $this->collection[] = new Test($title, $expect, $callback);
         return $this;
     }
 
@@ -80,13 +80,13 @@ class Collection
         foreach ($this->collection as $test) {
             $results[$test->title] = [];
 
-            for ($iteraction = 1; $iteraction <= $iterations; $iteraction++, $cursor++) {
+            for ($interaction = 1; $interaction <= $iterations; $interaction++, $cursor++) {
                 if (!$first) {
                     $this->printer?->tmpclear();
                 }
 
-                $this->printer?->tmpwrite("→ [Running test $cursor/$total] $test->title $iteraction/$iterations");
-                $results[$test->title][] = $test->execute($iteraction, $this->callbackArgs, $this->constructArgs);
+                $this->printer?->tmpwrite("→ [Running test $cursor/$total] $test->title $interaction/$iterations");
+                $results[$test->title][] = $test->execute($interaction, $this->callbackArgs, $this->constructArgs);
                 $first = false;
             }
         }

@@ -33,8 +33,8 @@ $agent
     )->addTest(
         'Partial1',
         [ 'return' => 'TEST' ],
-        function ($__iteraction) {
-            return $__iteraction % 2 ? 'TEST' : 'AAA';
+        function ($__interaction) {
+            return $__interaction % 2 ? 'TEST' : 'AAA';
         }
     )->addTest(
         'Error1',
@@ -58,8 +58,8 @@ $agent
     )->addTest(
         'Partial2',
         [ 'return' => 'TEST' ],
-        function ($__iteraction) {
-            return $__iteraction % 2 ? 'TEST' : 'AAA';
+        function ($__interaction) {
+            return $__interaction % 2 ? 'TEST' : 'AAA';
         }
     )->addTest(
         'Skipped1',
@@ -84,8 +84,8 @@ $agent
     )->addTest(
         'Partial1',
         [ 'return' => 'TEST' ],
-        function ($__iteraction) {
-            return $__iteraction % 2 ? 'TEST' : 'AAA';
+        function ($__interaction) {
+            return $__interaction % 2 ? 'TEST' : 'AAA';
         }
     )->addTest(
         'Error1',
@@ -109,8 +109,8 @@ $agent
     )->addTest(
         'Partial2',
         [ 'return' => 'TEST' ],
-        function ($__iteraction) {
-            return $__iteraction % 2 ? 'TEST' : (object)['aa' => 'bb'];
+        function ($__interaction) {
+            return $__interaction % 2 ? 'TEST' : (object)['aa' => 'bb'];
         }
     )->addTest(
         'Skipped1',
