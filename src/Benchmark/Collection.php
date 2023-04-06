@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace D5WHUB\Extend\Benchmark\Benchmark;
 
 use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
-use D5WHUB\Extend\Benchmark\Utils\Printer;
+use D5WHUB\Extend\Benchmark\Printer\Printer;
 
 class Collection
 {

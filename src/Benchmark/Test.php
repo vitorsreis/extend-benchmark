@@ -10,7 +10,6 @@ namespace D5WHUB\Extend\Benchmark\Benchmark;
 
 use Closure;
 use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
-use D5WHUB\Extend\Benchmark\Utils\Status;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;

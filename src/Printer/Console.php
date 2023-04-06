@@ -8,8 +8,7 @@ declare(strict_types=1);
 
 namespace D5WHUB\Extend\Benchmark\Printer;
 
-use D5WHUB\Extend\Benchmark\Utils\Printer;
-use D5WHUB\Extend\Benchmark\Utils\Status;
+use D5WHUB\Extend\Benchmark\Benchmark\Status;
 
 class Console implements Printer
 {

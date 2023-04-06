@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.0.3
+---
+* Fix domains
+* Fix tests
+
 1.0.2
 ---
 * Fix html printer

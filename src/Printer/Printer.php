@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace D5WHUB\Extend\Benchmark\Utils;
+namespace D5WHUB\Extend\Benchmark\Printer;
 
 interface Printer
 {

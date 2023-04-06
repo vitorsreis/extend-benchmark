@@ -1,17 +1,20 @@
 <?php
+/**
+ * This file is part of d5whub extend benchmark
+ * @author Vitor Reis <vitor@d5w.com.br>
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
 namespace D5WHUB\Test\Extend\Benchmark;
 
 use D5WHUB\Extend\Benchmark\Benchmark;
-use D5WHUB\Extend\Benchmark\Benchmark\Collection;
+use D5WHUB\Extend\Benchmark\Benchmark\Status;
 use D5WHUB\Extend\Benchmark\Benchmark\Test;
 use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
-use D5WHUB\Extend\Benchmark\Printer\Console;
-use D5WHUB\Extend\Benchmark\Utils\Status;
 use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassMethod;
-use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassMethodWithContruct;
+use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassMethodWithConstruct;
 use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassStaticMethod;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -593,7 +596,7 @@ class UnitTest extends TestCase
         $result = (new Test(
             __FUNCTION__,
             null,
-            [ [ MiddlewareByClassMethodWithContruct::class, 'execute' ] ]
+            [ [ MiddlewareByClassMethodWithConstruct::class, 'execute' ] ]
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);

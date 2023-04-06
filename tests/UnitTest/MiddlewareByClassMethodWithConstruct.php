@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace D5WHUB\Test\Extend\Benchmark\UnitTest;
 
-class MiddlewareByClassMethodWithContruct
+class MiddlewareByClassMethodWithConstruct
 {
     public function __construct(
         protected $__interaction,

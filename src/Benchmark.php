@@ -9,11 +9,11 @@ declare(strict_types=1);
 namespace D5WHUB\Extend\Benchmark;
 
 use D5WHUB\Extend\Benchmark\Benchmark\Collection;
+use D5WHUB\Extend\Benchmark\Benchmark\Status;
 use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
 use D5WHUB\Extend\Benchmark\Printer\Console;
 use D5WHUB\Extend\Benchmark\Printer\Html;
-use D5WHUB\Extend\Benchmark\Utils\Printer;
-use D5WHUB\Extend\Benchmark\Utils\Status;
+use D5WHUB\Extend\Benchmark\Printer\Printer;
 
 class Benchmark
 {
@@ -77,7 +77,6 @@ class Benchmark
             if (!$benchmark->ignoreResults) {
                 $this->sort($results);
                 $this->printer?->results($results);
-
             } else {
                 $this->printer?->withTime("| Ignored\n");
             }
