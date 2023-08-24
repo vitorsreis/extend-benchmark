@@ -1,18 +1,22 @@
 # Simple benchmark for PHP 8.2
-[![Latest Stable Version](https://poser.pugx.org/d5whub/extend-benchmark/v/stable)](https://packagist.org/packages/d5whub/extend-benchmark)
-[![PHP Version Require](http://poser.pugx.org/d5whub/extend-benchmark/require/php)](https://packagist.org/packages/d5whub/extend-benchmark)
-[![Monthly Downloads](https://poser.pugx.org/d5whub/extend-benchmark/d/monthly)](https://packagist.org/packages/d5whub/extend-benchmark)
-[![Total Downloads](https://poser.pugx.org/d5whub/extend-benchmark/downloads)](https://packagist.org/packages/d5whub/extend-benchmark)
-[![License](https://poser.pugx.org/d5whub/extend-benchmark/license)](https://packagist.org/packages/d5whub/extend-benchmark)
 
-With this simple and elegant benchmark, you can create multiple tests with multiple callbacks at once and output tests in real time.
+[![Latest Stable Version](https://img.shields.io/packagist/v/vitorsreis/extend-benchmark?style=flat-square&label=stable&color=2E9DD3)](https://packagist.org/packages/vitorsreis/extend-benchmark)
+[![PHP Version Require](https://img.shields.io/packagist/dependency-v/vitorsreis/extend-benchmark/php?style=flat-square&color=777BB3)](https://packagist.org/packages/vitorsreis/extend-benchmark)
+[![License](https://img.shields.io/packagist/l/vitorsreis/extend-benchmark?style=flat-square&color=418677)](https://github.com/vitorsreis/extend-benchmark/blob/master/LICENSE)
+[![Total Downloads](https://img.shields.io/packagist/dt/vitorsreis/extend-benchmark?style=flat-square&color=0476B7)](https://packagist.org/packages/vitorsreis/extend-benchmark)
+[![Repo Stars](https://img.shields.io/github/stars/vitorsreis/extend-benchmark?style=social)](https://github.com/vitorsreis/extend-benchmark)
+
+With this simple and elegant benchmark, you can create multiple tests with multiple callbacks at once and output tests
+in real time.
 
 ## Install
-```shell
-composer require "d5whub/extend-benchmark"
+
+```bash
+composer require vitorsreis/extend-benchmark
 ```
 
 ## Usage
+
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -53,6 +57,7 @@ $agent->execute(
 ```
 
 ###### • Expect test types
+
 ```php
 • null // Use null to any result
 • array( // or array of expected results, if omitted, the test will be considered successful
@@ -79,7 +84,9 @@ $agent->execute(
     )
 )
 ```
+
 ###### • There are 2 magic arguments that are automatically filled when detected in the call.
+
 ```php
 // Current interaction number
 $__interaction = int
@@ -117,7 +124,9 @@ $benchmark->addTest(
     fn ($arg1, $__interaction, $arg2, $__partial) => ..., // arrow function
 )
 ```
+
 ###### Supported callbacks
+
 ```php
 $benchmark->test(
     '<title>',
