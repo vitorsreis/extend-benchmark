@@ -16,7 +16,7 @@ composer require "d5whub/extend-benchmark"
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
-use D5WHUB\Extend\Benchmark\Benchmark;
+use VSR\Extend\Benchmark;
 
 // 1. Benchmark agent
 $agent = new Benchmark(

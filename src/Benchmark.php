@@ -1,19 +1,20 @@
 <?php
+
 /**
- * This file is part of d5whub extend benchmark
+ * This file is part of vsr extend benchmark
  * @author Vitor Reis <vitor@d5w.com.br>
  */
 
 declare(strict_types=1);
 
-namespace D5WHUB\Extend\Benchmark;
+namespace VSR\Extend;
 
-use D5WHUB\Extend\Benchmark\Benchmark\Collection;
-use D5WHUB\Extend\Benchmark\Benchmark\Status;
-use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
-use D5WHUB\Extend\Benchmark\Printer\Console;
-use D5WHUB\Extend\Benchmark\Printer\Html;
-use D5WHUB\Extend\Benchmark\Printer\Printer;
+use VSR\Extend\Benchmark\Collection;
+use VSR\Extend\Benchmark\Status;
+use VSR\Extend\Exception\BenchmarkException;
+use VSR\Extend\Printer\Console;
+use VSR\Extend\Printer\Html;
+use VSR\Extend\Printer\Printer;
 
 class Benchmark
 {
@@ -25,9 +26,9 @@ class Benchmark
     private readonly Printer|null $printer;
 
     public function __construct(
-        public readonly string      $title,
+        public readonly string $title,
         public readonly string|null $comment = null,
-        Printer|null                $printer = null
+        Printer|null $printer = null
     ) {
         if (func_num_args() < 3) {
             $printer = isset($_SERVER['HTTP_USER_AGENT']) ? new Html() : new Console();
@@ -88,7 +89,7 @@ class Benchmark
 
             $endResult = array_map(
                 function ($results) {
-                    $results = array_map(fn($i) => array_slice($i, 1), $results);
+                    $results = array_map(static fn($i) => array_slice($i, 1), $results);
                     $results = array_merge(...$results);
                     return $this->end($results);
                 },
@@ -111,8 +112,8 @@ class Benchmark
     {
         $resultsCount = count($results);
 
-        $skipped = array_filter($results, fn($i) => $i['status'] === Status::SKIPPED);
-        $success = array_filter($results, fn($i) => $i['status'] === Status::SUCCESS);
+        $skipped = array_filter($results, static fn($i) => $i['status'] === Status::SKIPPED);
+        $success = array_filter($results, static fn($i) => $i['status'] === Status::SUCCESS);
         $successCount = count($success);
 
         $status = $skipped ? Status::SKIPPED : ($successCount && $successCount === $resultsCount
@@ -137,17 +138,17 @@ class Benchmark
         }
 
         if ($status === Status::FAILED || $status === Status::PARTIAL) {
-            $failed = array_filter($results, fn($i) => $i['status'] === Status::FAILED);
+            $failed = array_filter($results, static fn($i) => $i['status'] === Status::FAILED);
             $error = current($failed)['error'];
         }
 
         if ($status === Status::FAILED || $status === Status::PARTIAL) {
-            $failed = array_filter($results, fn($i) => $i['status'] === Status::FAILED);
+            $failed = array_filter($results, static fn($i) => $i['status'] === Status::FAILED);
             $error = current($failed)['error'];
         }
 
         if ($status === Status::SKIPPED) {
-            $skipped = array_filter($results, fn($i) => $i['status'] === Status::SKIPPED);
+            $skipped = array_filter($results, static fn($i) => $i['status'] === Status::SKIPPED);
             $error = current($skipped)['error'];
         }
 
@@ -164,7 +165,7 @@ class Benchmark
 
     private function sort(array &$results): void
     {
-        uasort($results, function ($a, $b) {
+        uasort($results, static function ($a, $b) {
             if ($a['_']['status'] === Status::PARTIAL && $b['_']['status'] === Status::FAILED) {
                 return -1;
             }

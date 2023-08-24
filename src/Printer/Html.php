@@ -1,14 +1,15 @@
 <?php
+
 /**
- * This file is part of d5whub extend benchmark
+ * This file is part of vsr extend benchmark
  * @author Vitor Reis <vitor@d5w.com.br>
  */
 
 declare(strict_types=1);
 
-namespace D5WHUB\Extend\Benchmark\Printer;
+namespace VSR\Extend\Printer;
 
-use D5WHUB\Extend\Benchmark\Benchmark\Status;
+use VSR\Extend\Benchmark\Status;
 
 class Html implements Printer
 {
@@ -33,7 +34,7 @@ class Html implements Printer
     {
         @ini_set('output_buffering', 'off');
         @ini_set('zlib.output_compression', false);
-        while (@ob_end_flush());
+        while (@ob_end_flush()) ;
         @ini_set('implicit_flush', true);
         @ob_implicit_flush();
         @header('Content-Type: text/html; charset=UTF-8');
@@ -42,7 +43,7 @@ class Html implements Printer
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>D5WHUB Extend Benchmark</title>
+<title>vsr extend Benchmark</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -59,7 +60,7 @@ class Html implements Printer
 <body>
 HTML
         );
-        $this->withTime("<span class='m3 m90'>D5WHUB Extend Benchmark</span><br>");
+        $this->withTime("<span class='m3 m90'>vsr extend Benchmark</span><br>");
         $this->skipline();
         return $this;
     }
@@ -152,7 +153,10 @@ HTML
                             . "<span class='m3 m33'>Partial success %s/%s, failed: %s</span>",
                             $title,
                             $result['_']['average'],
-                            count(array_filter(array_slice($result, 1), fn($i) => $i['status'] === Status::SUCCESS)),
+                            count(array_filter(
+                                array_slice($result, 1),
+                                static fn($i) => $i['status'] === Status::SUCCESS
+                            )),
                             count(array_slice($result, 1)),
                             current($result['_']['error'])
                         );

@@ -1,21 +1,19 @@
 <?php
+
 /**
- * This file is part of d5whub extend benchmark
+ * This file is part of vsr extend benchmark
  * @author Vitor Reis <vitor@d5w.com.br>
  * @noinspection PhpUnhandledExceptionInspection
  */
 
 declare(strict_types=1);
 
-namespace D5WHUB\Test\Extend\Benchmark;
+namespace VSR\Test\Extend\Benchmark;
 
-use D5WHUB\Extend\Benchmark\Benchmark;
-use D5WHUB\Extend\Benchmark\Benchmark\Status;
-use D5WHUB\Extend\Benchmark\Benchmark\Test;
-use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
-use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassMethod;
-use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassMethodWithConstruct;
-use D5WHUB\Test\Extend\Benchmark\UnitTest\MiddlewareByClassStaticMethod;
+use VSR\Extend\Benchmark;
+use VSR\Extend\Benchmark\Status;
+use VSR\Extend\Benchmark\Test;
+use VSR\Extend\Exception\BenchmarkException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +24,7 @@ class UnitTest extends TestCase
         $result = (new Test(
             __FUNCTION__,
             null,
-            [ fn() => 'TEST' ]
+            [fn() => 'TEST']
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -37,12 +35,12 @@ class UnitTest extends TestCase
         $this->assertEmpty($result['hit']['throw']);
     }
 
-    public function testExpectReturnSucces(): void
+    public function testExpectReturnSuccess(): void
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'return' => 'TEST' ],
-            [ fn() => 'TEST' ]
+            ['return' => 'TEST'],
+            [fn() => 'TEST']
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -57,25 +55,25 @@ class UnitTest extends TestCase
     {
         ($agent = new Benchmark(__FUNCTION__))
             ->createBenchmark(__FUNCTION__)
-            ->addTest('TT', [ 'return' => 'TEST' ], fn($__interaction) => $__interaction % 2 ? 'TEST' : 111);
+            ->addTest('TT', ['return' => 'TEST'], fn($__interaction) => $__interaction % 2 ? 'TEST' : 111);
         $result = $agent->execute(2);
 
         $this->assertEquals(Status::PARTIAL, $result['TT']['_']['status']);
-        $this->assertEquals([ 'Expect return "TEST", actual 111' ], $result['TT']['_']['error']);
+        $this->assertEquals(['Expect return "TEST", actual 111'], $result['TT']['_']['error']);
     }
 
     public function testExpectReturnFailed(): void
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'return' => 'TEST' ],
-            [ fn() => 111 ]
+            ['return' => 'TEST'],
+            [fn() => 111]
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('integer', $result['hit']['type']);
         $this->assertEquals(111, $result['hit']['return']);
-        $this->assertEquals([ 'Expect return "TEST", actual 111' ], $result['error']);
+        $this->assertEquals(['Expect return "TEST", actual 111'], $result['error']);
         $this->assertEmpty($result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }
@@ -84,14 +82,14 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'return' => 'TEST' ],
+            ['return' => 'TEST'],
             []
         ))->execute(1);
 
         $this->assertEquals(Status::SKIPPED, $result['status']);
         $this->assertEquals('skipped', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Skipped, empty callbacks...' ], $result['error']);
+        $this->assertEquals(['Skipped, empty callbacks...'], $result['error']);
         $this->assertEmpty($result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }
@@ -100,8 +98,10 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'output' => 'TEST' ],
-            [ function () { echo 'TEST'; } ] // phpcs:ignore
+            ['output' => 'TEST'],
+            [function () {
+                echo 'TEST';
+            }] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -116,14 +116,16 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'output' => 'TEST' ],
-            [ function () { echo 111; } ] // phpcs:ignore
+            ['output' => 'TEST'],
+            [function () {
+                echo 111;
+            }] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('output', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Expect output "TEST", actual "111"' ], $result['error']);
+        $this->assertEquals(['Expect output "TEST", actual "111"'], $result['error']);
         $this->assertEquals(111, $result['hit']['output']);
         $this->assertEmpty($result['hit']['throw']);
     }
@@ -132,8 +134,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => null ],
-            [ fn () => 'TEST' ] // phpcs:ignore
+            ['throw' => null],
+            [fn() => 'TEST'] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -148,8 +150,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => null ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => null],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
@@ -181,8 +183,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'class' => Exception::class ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['class' => Exception::class]],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -203,14 +205,14 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ "class" => "xxx" ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ["class" => "xxx"]],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Expect throw throw{class:"xxx"}, actual throw{class:"Exception"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals(['Expect throw throw{class:"xxx"}, actual throw{class:"Exception"}'], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -225,8 +227,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'message' => 'TEST' ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['message' => 'TEST']],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -247,14 +249,14 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'message' => 'xxx' ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['message' => 'xxx']],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Expect throw throw{message:"xxx"}, actual throw{message:"TEST"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals(['Expect throw throw{message:"xxx"}, actual throw{message:"TEST"}'], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -269,8 +271,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'code' => E_ERROR ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['code' => E_ERROR]],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -291,14 +293,14 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'code' => 111 ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['code' => 111]],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Expect throw throw{code:"111"}, actual throw{code:"1"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals(['Expect throw throw{code:"111"}, actual throw{code:"1"}'], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -313,8 +315,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'line' => __LINE__ + 1 ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['line' => __LINE__ + 1]],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -335,14 +337,14 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'line' => 1 ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['line' => 1]],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
         $this->assertEquals('throw', $result['hit']['type']);
         $this->assertEmpty($result['hit']['return']);
-        $this->assertEquals([ 'Expect throw throw{line:"1"}, actual throw{line:"' . (__LINE__ - 6) . '"}' ], $result['error']); // phpcs:ignore
+        $this->assertEquals(['Expect throw throw{line:"1"}, actual throw{line:"' . (__LINE__ - 6) . '"}'], $result['error']); // phpcs:ignore
         $this->assertEmpty($result['hit']['output']);
         $this->assertEquals([
             'class' => Exception::class,
@@ -357,8 +359,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'file' => __FILE__ ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['file' => __FILE__]],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::SUCCESS, $result['status']);
@@ -379,8 +381,8 @@ class UnitTest extends TestCase
     {
         $result = (new Test(
             __FUNCTION__,
-            [ 'throw' => [ 'file' => 'xxx' ] ],
-            [ fn () => throw new Exception('TEST', E_ERROR) ] // phpcs:ignore
+            ['throw' => ['file' => 'xxx']],
+            [fn() => throw new Exception('TEST', E_ERROR)] // phpcs:ignore
         ))->execute(1);
 
         $this->assertEquals(Status::FAILED, $result['status']);
@@ -402,221 +404,16 @@ class UnitTest extends TestCase
         ], $result['hit']['throw']);
     }
 
-    public function testWithMiddlewareByFunctionName()
-    {
-        function middlewareNamedFunction($__interaction, $__partial): string
-        {
-            return "$__interaction:$__partial[return]:test";
-        }
-
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ "\\" . __NAMESPACE__ . '\\middlewareNamedFunction' ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByNativeFunction()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ 'stripos' ]
-        ))->execute(1, [ 'haystack' => 'ABCDEF', 'needle' => 'D' ]);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('integer', $result['hit']['type']);
-        $this->assertEquals(3, $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByAnonymousFunction()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ function ($__interaction, $__partial) {
-                return "$__interaction:$__partial[return]:test";
-            } ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByArrowFunction()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ fn ($__interaction, $__partial) => "$__interaction:$__partial[return]:test" ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByVariableFunction()
-    {
-        $varfunc = fn ($__interaction, $__partial) => "$__interaction:$__partial[return]:test";
-
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ $varfunc ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByClassStaticMethodArray()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ [ MiddlewareByClassStaticMethod::class, 'params' ] ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByClassStaticMethodString()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ "\\" . __NAMESPACE__ . "\\UnitTest\\MiddlewareByClassStaticMethod::params" ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByClassStaticMethodObject()
-    {
-        $class = new MiddlewareByClassStaticMethod();
-
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ [ $class, 'params' ] ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByClassMethodArray()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ [ MiddlewareByClassMethod::class, 'execute' ] ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByClassMethodString()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ "\\" . __NAMESPACE__ . "\\UnitTest\\MiddlewareByClassMethod::execute" ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByClassMethodObject()
-    {
-        $class = new MiddlewareByClassMethod();
-
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ [ $class, 'execute' ] ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
-    public function testWithMiddlewareByClassMethodWithConstructArray()
-    {
-        $result = (new Test(
-            __FUNCTION__,
-            null,
-            [ [ MiddlewareByClassMethodWithConstruct::class, 'execute' ] ]
-        ))->execute(1);
-
-        $this->assertEquals(Status::SUCCESS, $result['status']);
-        $this->assertEquals('string', $result['hit']['type']);
-        $this->assertEquals('1::test', $result['hit']['return']);
-        $this->assertEmpty($result['error']);
-        $this->assertEmpty($result['hit']['output']);
-        $this->assertEmpty($result['hit']['throw']);
-    }
-
     public function testErrorCallbackNotFound()
     {
         $this->expectException(BenchmarkException::class);
         $this->expectExceptionCode(500);
-        $this->expectExceptionMessage("Function xxx() does not exist");
+        $this->expectExceptionMessage("Function \"xxx()\" does not exist");
 
         (new Test(
             __FUNCTION__,
             null,
-            [ "xxx" ]
+            ["xxx"]
         ))->execute(1);
     }
 
@@ -629,7 +426,7 @@ class UnitTest extends TestCase
         (new Test(
             __FUNCTION__,
             null,
-            [ '\\~::~notFoundMethod' ]
+            ['\\~::~notFoundMethod']
         ))->execute(1);
     }
 
@@ -637,12 +434,12 @@ class UnitTest extends TestCase
     {
         $this->expectException(BenchmarkException::class);
         $this->expectExceptionCode(500);
-        $this->expectExceptionMessage("Method " . self::class . "::~notFoundMethod() does not exist");
+        $this->expectExceptionMessage("Method \"" . self::class . "::~notFoundMethod()\" does not exist");
 
         (new Test(
             __FUNCTION__,
             null,
-            [ self::class . '::~notFoundMethod' ]
+            [self::class . '::~notFoundMethod']
         ))->execute(1);
     }
 
@@ -650,12 +447,12 @@ class UnitTest extends TestCase
     {
         $this->expectException(BenchmarkException::class);
         $this->expectExceptionCode(500);
-        $this->expectExceptionMessage("Function ~notFoundFunction() does not exist");
+        $this->expectExceptionMessage("Function \"~notFoundFunction()\" does not exist");
 
         (new Test(
             __FUNCTION__,
             null,
-            [ '~notFoundFunction' ]
+            ['~notFoundFunction']
         ))->execute(1);
     }
 

@@ -1,28 +1,31 @@
 <?php
+
 /**
- * This file is part of d5whub extend benchmark
+ * This file is part of vsr extend benchmark
  * @author Vitor Reis <vitor@d5w.com.br>
  */
 
 declare(strict_types=1);
 
-namespace D5WHUB\Extend\Benchmark\Benchmark;
+namespace VSR\Extend\Benchmark;
 
-use Closure;
-use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
-use ReflectionException;
-use ReflectionFunction;
-use ReflectionMethod;
+use VSR\Extend\Caller;
+use VSR\Extend\Exception\BenchmarkException;
 use Throwable;
 
 readonly class Test
 {
     private const MAX_STRING_LENGTH = 50;
 
+    /**
+     * @param string $title
+     * @param array|null $expect
+     * @param array<int,array|callable|string> $callbacks
+     */
     public function __construct(
-        public string     $title,
+        public string $title,
         public array|null $expect,
-        public array      $callbacks
+        public array $callbacks
     ) {
     }
 
@@ -107,7 +110,7 @@ readonly class Test
         if ($result['type'] === 'skipped') {
             return [
                 'status' => Status::SKIPPED,
-                'error' => [ $this->expect['skipped'] ?? "Skipped, empty callbacks..." ]
+                'error' => [$this->expect['skipped'] ?? "Skipped, empty callbacks..."]
             ];
         }
 
@@ -119,36 +122,48 @@ readonly class Test
 
             if (is_null($this->expect['throw']) && $result['throw']) {
                 $status = Status::FAILED;
-                $keys = [ 'class', 'message', 'code', 'line', 'file' ];
+                $keys = ['class', 'message', 'code', 'line', 'file'];
             } elseif (is_string($this->expect['throw'])) {
-                if (isset($this->expect['throw']['class'])
-                    && $this->expect['throw']['class'] !== ($result['throw']['class'] ?? null)) {
+                if (
+                    isset($this->expect['throw']['class'])
+                    && $this->expect['throw']['class'] !== ($result['throw']['class'] ?? null)
+                ) {
                     $status = Status::FAILED;
                     $keys[] = 'class';
                 }
             } elseif (is_array($this->expect['throw'])) {
-                if (array_key_exists('class', $this->expect['throw'])
-                    && $this->expect['throw']['class'] !== ($result['throw']['class'] ?? null)) {
+                if (
+                    array_key_exists('class', $this->expect['throw'])
+                    && $this->expect['throw']['class'] !== ($result['throw']['class'] ?? null)
+                ) {
                     $status = Status::FAILED;
                     $keys[] = 'class';
                 }
-                if (array_key_exists('code', $this->expect['throw'])
-                    && $this->expect['throw']['code'] !== ($result['throw']['code'] ?? null)) {
+                if (
+                    array_key_exists('code', $this->expect['throw'])
+                    && $this->expect['throw']['code'] !== ($result['throw']['code'] ?? null)
+                ) {
                     $status = Status::FAILED;
                     $keys[] = 'code';
                 }
-                if (array_key_exists('message', $this->expect['throw'])
-                    && $this->expect['throw']['message'] !== ($result['throw']['message'] ?? null)) {
+                if (
+                    array_key_exists('message', $this->expect['throw'])
+                    && $this->expect['throw']['message'] !== ($result['throw']['message'] ?? null)
+                ) {
                     $status = Status::FAILED;
                     $keys[] = 'message';
                 }
-                if (array_key_exists('file', $this->expect['throw'])
-                    && $this->expect['throw']['file'] !== ($result['throw']['file'] ?? null)) {
+                if (
+                    array_key_exists('file', $this->expect['throw'])
+                    && $this->expect['throw']['file'] !== ($result['throw']['file'] ?? null)
+                ) {
                     $status = Status::FAILED;
                     $keys[] = 'file';
                 }
-                if (array_key_exists('line', $this->expect['throw'])
-                    && $this->expect['throw']['line'] !== ($result['throw']['line'] ?? null)) {
+                if (
+                    array_key_exists('line', $this->expect['throw'])
+                    && $this->expect['throw']['line'] !== ($result['throw']['line'] ?? null)
+                ) {
                     $status = Status::FAILED;
                     $keys[] = 'line';
                 }
@@ -170,7 +185,7 @@ readonly class Test
                 $this->tostr($this->expect['output']),
                 empty($result['throw']) || array_key_exists('throw', $this->expect ?? [])
                     ? $this->tostr($result['output'])
-                    : $this->tostr($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
+                    : $this->tostr($result['throw'], ['class', 'message', 'code', 'line', 'file'])
             );
         }
 
@@ -181,7 +196,7 @@ readonly class Test
                 $this->tostr($this->expect['return']),
                 empty($result['throw']) || array_key_exists('throw', $this->expect ?? [])
                     ? $this->tostr($result['return'])
-                    : $this->tostr($result['throw'], [ 'class', 'message', 'code', 'line', 'file' ])
+                    : $this->tostr($result['throw'], ['class', 'message', 'code', 'line', 'file'])
             );
         }
 
@@ -258,7 +273,7 @@ readonly class Test
         }
 
         return $inverse
-            ? "..." . substr($value, - self::MAX_STRING_LENGTH + 3)
+            ? "..." . substr($value, -self::MAX_STRING_LENGTH + 3)
             : substr($value, 0, self::MAX_STRING_LENGTH - 3) . "...";
     }
 
@@ -267,54 +282,22 @@ readonly class Test
      */
     private static function callback(mixed $callback, array $callbackArgs = [], array $constructArgs = []): array
     {
-        if (is_object($callback) && !($callback instanceof Closure)) {
-            # anonymous class
-            $callback = [$callback, '__invoke'];
-        } elseif (is_string($callback)) {
-            if (str_contains($callback, '::')) {
-                # class::method string
-                $callback = explode('::', $callback);
-            } elseif (!function_exists($callback) && class_exists($callback)) {
-                echo 'a' . PHP_EOL;
-                # class::__invoke
-                $callback = [$callback, '__invoke'];
-            }
-        }
-
-        if (is_array($callback)) {
-            # method / static method
-            try {
-                $reflection = new ReflectionMethod($callback[0], $callback[1]);
-            } catch (ReflectionException $e) {
-                throw new BenchmarkException($e->getMessage(), 500, $e);
-            }
-
-            if (!$reflection->isStatic()) {
-                $arguments = method_exists($callback[0], '__construct')
-                    ? self::populate(new ReflectionMethod($callback[0], '__construct'), $constructArgs)
-                    : [];
-
-                $callback[0] = new $callback[0](...$arguments);
-            }
-        } else {
-            # function / anonymous function / arrow function / string function
-            try {
-                $reflection = new ReflectionFunction($callback);
-            } catch (ReflectionException $e) {
-                throw new BenchmarkException($e->getMessage(), 500, $e);
-            }
+        try {
+            $caller = new Caller($callback);
+        } catch (Throwable $e) {
+            throw new BenchmarkException($e->getMessage(), 500, $e);
         }
 
         @ob_start();
         try {
-            $return = call_user_func_array($callback, self::populate($reflection, $callbackArgs));
+            $return = $caller->execute($callbackArgs, $constructArgs)->result;
             $throw = null;
             $output = @ob_get_clean();
             $type = is_null($return ?? null) && !empty($output) ? 'output' : gettype($return ?? null);
         } catch (Throwable $e) {
+            @ob_end_clean();
             $return = null;
             $output = null;
-            ob_end_clean();
             $throw = [
                 'class' => get_class($e),
                 'message' => $e->getMessage(),
@@ -326,37 +309,10 @@ readonly class Test
         }
 
         return [
-            'type' => $type ,
+            'type' => $type,
             'return' => $return,
             'output' => $output,
             'throw' => $throw
         ];
-    }
-
-    /**
-     * @throws BenchmarkException
-     */
-    private static function populate(ReflectionMethod|ReflectionFunction $reflection, array $params = []): array
-    {
-        $arguments = [];
-
-        foreach ($reflection->getParameters() as $param) {
-            if (isset($params[$param->getName()])) {
-                $arguments[$param->getName()] = $params[$param->getName()]; # URL named params
-                continue;
-            }
-
-            if ($param->isDefaultValueAvailable()) {
-                $arguments[$param->getName()] = $param->getDefaultValue();
-                continue;
-            }
-
-            throw new BenchmarkException(
-                sprintf("Required argument \"%s\" for invoke \"%s\"!", $param->getName(), $reflection->getName()),
-                500
-            );
-        }
-
-        return $arguments;
     }
 }

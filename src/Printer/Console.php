@@ -1,14 +1,15 @@
 <?php
+
 /**
- * This file is part of d5whub extend benchmark
+ * This file is part of vsr extend benchmark
  * @author Vitor Reis <vitor@d5w.com.br>
  */
 
 declare(strict_types=1);
 
-namespace D5WHUB\Extend\Benchmark\Printer;
+namespace VSR\Extend\Printer;
 
-use D5WHUB\Extend\Benchmark\Benchmark\Status;
+use VSR\Extend\Benchmark\Status;
 
 class Console implements Printer
 {
@@ -22,7 +23,7 @@ class Console implements Printer
 
     public function start(): self
     {
-        $this->withTime("\e[3;90mD5WHUB Extend Benchmark\n");
+        $this->withTime("\e[3;90mvsr extend Benchmark\n");
         $this->skipline();
         return $this;
     }
@@ -49,7 +50,6 @@ class Console implements Printer
         $comment = $comment ? trim($comment) : '';
         $iterations = $iterations ? (" $iterations time" . ($iterations > 1 ? 's' : '')) : "";
         $comment = $comment ? " " . ($iterations ? "- " : "") . "$comment" : "";
-
         $this->withTime("\e[0;1m• \e[4;34m$title\e[0;1;90m$iterations$comment\n");
         return $this;
     }
@@ -71,20 +71,13 @@ class Console implements Printer
     {
         $pad = max(array_map('strlen', array_map('trim', array_keys($results))));
         $best = current($results)['_']['average'];
-
         foreach ($results as $title => $result) {
             $title = str_pad($title, $pad);
-
             $text = '';
-
             switch ($result['_']['status']) {
                 case Status::SUCCESS:
                     if ($best === $result['_']['average']) {
-                        $text = sprintf(
-                            "\e[0m| %s | %.11fs | baseline",
-                            $title,
-                            $result['_']['average']
-                        );
+                        $text = sprintf("\e[0m| %s | %.11fs | baseline", $title, $result['_']['average']);
                     } else {
                         $slower = round((1 - $result['_']['average'] / $best) * 100 * -1, 1);
                         $text = sprintf(
@@ -95,8 +88,8 @@ class Console implements Printer
                             $result['_']['average'] - $best
                         );
                     }
-                    break;
 
+                    break;
                 case Status::PARTIAL:
                     $text = $end
                         ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
@@ -104,22 +97,26 @@ class Console implements Printer
                             "\e[0m| %s | %.11fs | \e[3;33mPartial success %s/%s, failed: %s",
                             $title,
                             $result['_']['average'],
-                            count(array_filter(array_slice($result, 1), fn($i) => $i['status'] === Status::SUCCESS)),
+                            count(array_filter(
+                                array_slice($result, 1),
+                                static fn($i) => $i['status'] === Status::SUCCESS
+                            )),
                             count(array_slice($result, 1)),
                             current($result['_']['error'])
                         );
-                    break;
 
+                    break;
                 case Status::SKIPPED:
                     $text = $end
                         ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
                         : sprintf("\e[0m| %s | \e[3;90m%s", $title, current($result['_']['error']));
-                    break;
 
+                    break;
                 case Status::FAILED:
                     $text = $end
                         ? sprintf("\e[0m| %s | \e[3;90mNot conclusive", $title)
                         : sprintf("\e[0m| %s | \e[3;31mFailed: %s", $title, current($result['_']['error']));
+
                     break;
             }
             $this->withTime("$text\n");

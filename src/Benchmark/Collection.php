@@ -1,15 +1,16 @@
 <?php
+
 /**
- * This file is part of d5whub extend benchmark
+ * This file is part of vsr extend benchmark
  * @author Vitor Reis <vitor@d5w.com.br>
  */
 
 declare(strict_types=1);
 
-namespace D5WHUB\Extend\Benchmark\Benchmark;
+namespace VSR\Extend\Benchmark;
 
-use D5WHUB\Extend\Benchmark\Exception\BenchmarkException;
-use D5WHUB\Extend\Benchmark\Printer\Printer;
+use VSR\Extend\Exception\BenchmarkException;
+use VSR\Extend\Printer\Printer;
 
 class Collection
 {
@@ -23,9 +24,9 @@ class Collection
     private array $constructArgs = [];
 
     public function __construct(
-        public readonly string       $title,
-        public readonly string|null  $comment = null,
-        public readonly int|null     $iterations = null,
+        public readonly string $title,
+        public readonly string|null $comment = null,
+        public readonly int|null $iterations = null,
         public readonly Printer|null $printer = null,
         public readonly bool $ignoreResults = false
     ) {
@@ -36,6 +37,7 @@ class Collection
      *     type:string,
      *     return:mixed,
      *     output:null|string,
+     *     skipped:null|string,
      *     throw:null|array{
      *         class:string,
      *         message:string,
@@ -46,8 +48,8 @@ class Collection
      * }|null $expect
      */
     public function addTest(
-        string                $title,
-        array|null            $expect,
+        string $title,
+        array|null $expect,
         array|callable|string ...$callback
     ): self {
         $this->collection[] = new Test($title, $expect, $callback);
