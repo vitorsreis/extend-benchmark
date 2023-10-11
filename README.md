@@ -26,7 +26,7 @@ use VSR\Extend\Benchmark;
 $agent = new Benchmark(
     'My benchmark tests',
     // [optional] 'My Comment',
-    // [optional] Printer, if not informad will be used the default printers ( Printer/Console | Printer/Html ) 
+    // [optional] Printer, if not informed, will be used the default printers ( Printer/Console | Printer/Html ) 
 );
 
 // 2. Create benchmarks
