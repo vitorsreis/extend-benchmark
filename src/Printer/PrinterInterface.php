@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace VSR\Extend\Printer;
 
-interface Printer
+interface PrinterInterface
 {
     public function withTime(string ...$values): self;
 

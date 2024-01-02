@@ -14,7 +14,7 @@ use VSR\Extend\Benchmark\Status;
 use VSR\Extend\Exception\BenchmarkException;
 use VSR\Extend\Printer\Console;
 use VSR\Extend\Printer\Html;
-use VSR\Extend\Printer\Printer;
+use VSR\Extend\Printer\PrinterInterface;
 
 class Benchmark
 {
@@ -23,12 +23,12 @@ class Benchmark
      */
     private array $benchmarks = [];
 
-    private readonly Printer|null $printer;
+    private readonly PrinterInterface|null $printer;
 
     public function __construct(
         public readonly string $title,
         public readonly string|null $comment = null,
-        Printer|null $printer = null
+        PrinterInterface|null $printer = null
     ) {
         if (func_num_args() < 3) {
             $printer = isset($_SERVER['HTTP_USER_AGENT']) ? new Html() : new Console();

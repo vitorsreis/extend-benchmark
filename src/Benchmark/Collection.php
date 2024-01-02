@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace VSR\Extend\Benchmark;
 
 use VSR\Extend\Exception\BenchmarkException;
-use VSR\Extend\Printer\Printer;
+use VSR\Extend\Printer\PrinterInterface;
 
 class Collection
 {
@@ -27,7 +27,7 @@ class Collection
         public readonly string $title,
         public readonly string|null $comment = null,
         public readonly int|null $iterations = null,
-        public readonly Printer|null $printer = null,
+        public readonly PrinterInterface|null $printer = null,
         public readonly bool $ignoreResults = false
     ) {
     }

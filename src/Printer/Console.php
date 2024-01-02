@@ -11,7 +11,7 @@ namespace VSR\Extend\Printer;
 
 use VSR\Extend\Benchmark\Status;
 
-class Console implements Printer
+class Console implements PrinterInterface
 {
     public function withTime(string ...$values): self
     {

@@ -1,4 +1,4 @@
-# Simple benchmark for PHP 8.2
+# Simple benchmark for PHP 8.2+
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/vitorsreis/extend-benchmark?style=flat-square&label=stable&color=2E9DD3)](https://packagist.org/packages/vitorsreis/extend-benchmark)
 [![PHP Version Require](https://img.shields.io/packagist/dependency-v/vitorsreis/extend-benchmark/php?style=flat-square&color=777BB3)](https://packagist.org/packages/vitorsreis/extend-benchmark)
@@ -7,7 +7,7 @@
 [![Repo Stars](https://img.shields.io/github/stars/vitorsreis/extend-benchmark?style=social)](https://github.com/vitorsreis/extend-benchmark)
 
 With this simple and elegant benchmark, you can create multiple tests with multiple callbacks at once and output tests
-in real time.
+in real time. Unit tests have passed on versions: ```8.2``` and  ```8.3```
 
 ## Install
 
